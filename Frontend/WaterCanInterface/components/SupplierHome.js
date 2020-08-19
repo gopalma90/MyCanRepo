@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   ListItem,
+  TouchableOpacity,
   Text,
   TextInput,
   Button,
@@ -25,11 +26,12 @@ import {
 
 
 
-const Item = ({ title }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
+const Item = ({ item, onPress, style }) => (
+  <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+    <Text style={styles.title}>Name: {item.customer.name} quantity: {item.orders.quantity}</Text>
+  </TouchableOpacity>
 );
+
 
 
 const SupplierHome = (props) => {
@@ -57,16 +59,31 @@ const SupplierHome = (props) => {
       });
   }
 
+  /*
+    renderData = () => {
+  
+      for ( var order in orders ) {
+        return orders.map(order => {
+          return <Text>Name: {order.customer.name} quantity: {order.orders.quantity}</Text>;
+        });
+      }
+      
+    };
+  */
 
-  renderData = () => {
-
-    for ( var order in orders ) {
-      return orders.map(order => {
-        return <Text>Id: {order.customer.name} quantity: {order.orders.quantity}</Text>;
-      });
-    }
+  showAddress = ( item ) => {
+    console.log ( "door no = " + item.addr.doorno)
     
+    Alert.alert ( 'Customer Address', "doorno:{item.addr.doorno}, {item.addr.floorno}floor, {item.addr.street}, {item.addr.aptname}, {item.addr.area}, {item.addr.city} ", [{text: 'OK'}]);
+  }
+  renderData = ({ item }) => {
+    return (
+      <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
+        <Text style={styles.title}>Name: {item.customer.name} quantity: {item.orders.quantity}</Text>
+      </TouchableOpacity>
+    );
   };
+
 
   if (!gotOrders) {
     return (
@@ -88,7 +105,13 @@ const SupplierHome = (props) => {
   }
   else {
     return (
-      <View style={styles.container}>{renderData()}</View>
+      //<View style={styles.container}>{renderData()}</View>
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={orders}
+          renderItem={renderData}
+        />
+      </SafeAreaView>
     )
   }
 
@@ -120,6 +143,14 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     width: 10,
     height: 40
+  },
+  item: {
+    padding: 10,
+    marginVertical: 8,
+    marginHorizontal: 10,
+  },
+  title: {
+    fontSize: 20,
   },
 });
 
