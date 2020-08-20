@@ -1,8 +1,9 @@
 import React, { Component, useState } from 'react'
-import { View, ScrollView, Text, Button, BackHandler, TouchableHighlight, TextInput, StyleSheet, 
+import {
+    View, ScrollView, Text, Button, BackHandler, TouchableHighlight, TextInput, StyleSheet,
     Alert,
 } from 'react-native'
-import AsyncStorage  from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const Register = () => {
 
@@ -55,89 +56,92 @@ const Register = () => {
     handleSupplierId = (text) => {
         setSupplierId(text)
     }
-    
+
     _setData = async (data) => {
         try {
-            await AsyncStorage.setItem('@clientdata', data );
+            await AsyncStorage.setItem('@clientdata', data);
         }
-        catch (error) { 
+        catch (error) {
             console.log('prob storing the id: ' + error.message);
         }
     }
     registerData = () => {
-        if ( shopname && supplierid ) {
-            Alert.alert ( 'Invalid data', 'Please provide either Shop name  if you are supplier and SupplierId if you are consumer. Not both ', [{text: 'OK'}]);
+        if (shopname && supplierid) {
+            Alert.alert('Invalid data', 'Please provide either Shop name  if you are supplier and SupplierId if you are consumer. Not both ', [{ text: 'OK' }]);
         }
-        if ( shopname ) {
-            fetch ( 'http://192.168.1.5:8080/api/v1/supplier', {
+        if (shopname) {
+            fetch('http://192.168.1.5:8080/api/v1/supplier', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     "name": name,
-                    "contact":contactno,
+                    "contact": contactno,
                     "shopname": shopname,
-                    "address":{
-                       "doorno":doorno,
-                       "floor":floorno,
-                       "street":street,
-                       "apartmentname":apartmentname,
-                       "area":area,
-                       "city":city,
-                       "state":states,
+                    "address": {
+                        "doorno": doorno,
+                        "floor": floorno,
+                        "street": street,
+                        "apartmentname": apartmentname,
+                        "area": area,
+                        "city": city,
+                        "state": states,
                     }
-                }), 
+                }),
             })
-            .then ( (response ) => response.json() )
-            .then ( (responsejson) => {
-                _setData( JSON.stringify( responsejson ) ); 
-                Alert.alert ('Successfully registered', 'Press Ok and restart the app.', [ { text: 'OK' }])
-            })
-            .catch(function(error) {
-                console.log('There has been a problem with your fetch operation: ' + error.message);
-                  throw error;
+                .then((response) => response.json())
+                .then((responsejson) => {
+                    _setData(JSON.stringify(responsejson));
+                    Alert.alert('Successfully registered', 'Press Ok and restart the app.', [{ text: 'OK' }])
+                })
+                .catch(function (error) {
+                    console.log('There has been a problem with your fetch operation: ' + error.message);
+                    throw error;
                 });
         }
-        else if ( supplierid ){
-            fetch ( 'http://192.168.1.5:8080/api/v1/customer', {
+        else if (supplierid) {
+            fetch('http://192.168.1.5:8080/api/v1/customer', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     "name": name,
-                    "contact":contactno,
+                    "contact": contactno,
                     "supplierid": supplierid,
-                    "address":{
-                       "doorno":doorno,
-                       "floor":floorno,
-                       "street":street,
-                       "apartmentname":apartmentname,
-                       "area":area,
-                       "city":city,
-                       "state":states,
+                    "address": {
+                        "doorno": doorno,
+                        "floor": floorno,
+                        "street": street,
+                        "apartmentname": apartmentname,
+                        "area": area,
+                        "city": city,
+                        "state": states,
                     }
-                }), 
+                }),
             })
-            .then ( (response ) => response.json() )
-            .then ( (responsejson) => {
-                _setData( JSON.stringify( responsejson ) );
-                Alert.alert ('Successfully registered', 'Press Ok and restart the app.', [ { text: 'OK'  }])
+                .then((response) => response.json())
+                .then((responsejson) => {
+                    _setData(JSON.stringify(responsejson));
+                    Alert.alert('Successfully registered', 'Press Ok and restart the app.', [{ text: 'OK' }])
 
-            })
-            .catch(function(error) {
-                console.log('There has been a problem with your fetch operation: ' + error.message);
-                  throw error;
+                })
+                .catch(function (error) {
+                    console.log('There has been a problem with your fetch operation: ' + error.message);
+                    throw error;
                 });
         }
         else {
-            Alert.alert ( 'Invalid data', 'Please provide either Shop name  if you are supplier and SupplierId if you are consumer', [{text: 'OK'}]);
+            Alert.alert('Invalid data', 'Please provide either Shop name  if you are supplier and SupplierId if you are consumer', [{ text: 'OK' }]);
 
         }
     }
     return (
         <ScrollView style={styles.container}>
+
+            <Text style={styles.textcss}>Enter Your details</Text>
+
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
                 placeholder="Name"
@@ -217,17 +221,18 @@ const Register = () => {
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleSupplierId} />
-
-                <Button
-                    style={styles.cancelButton}
+            <View style={styles.fixToText}>
+                <Button  
+                    color = "#dc143c"
                     title="Cancel"
                     onPress={() => BackHandler.exitApp()}
                 />
-                 <Button
-                    style={styles.submitButton}
+                <Button
+                    color = "#228b22"
                     title="Submit"
-                    onPress={() => registerData() }
+                    onPress={() => registerData()}
                 />
+            </View>
         </ScrollView>
     )
 };
@@ -246,22 +251,14 @@ const styles = StyleSheet.create({
     fixToText: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-    },
+        margin: 20,
+     },
     textcss: {
-        color: 'black'
+        color: 'black',
+        marginLeft : 15,
+        alignContent : 'center',
     },
-    submitButton: {
-        backgroundColor: 'green',
-        marginRight: 20,
-        width: 10,
-        height: 40,
-    },
-    cancelButton: {
-        backgroundColor: 'red',
-        marginLeft: 20,
-        width: 10,
-        height: 40
-    },
+  
 });
 
 

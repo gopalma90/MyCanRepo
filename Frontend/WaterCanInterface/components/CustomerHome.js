@@ -31,12 +31,12 @@ const CustomerHome = (props) => {
   }
 
   placeOrder = () => {
-    console.log(' customerid ' + JSON.stringify (props.data.id) );
-    console.log(' supplier ' + JSON.stringify (props.data.supplierid) );
-  
+    console.log(' customerid ' + JSON.stringify(props.data.id));
+    console.log(' supplier ' + JSON.stringify(props.data.supplierid));
+
     //console.log (" supplierid = " + {props.data.supplierid} );
-    
-  
+
+
     fetch('http://192.168.1.5:8080/api/v1/placeorder', {
       method: 'POST',
       headers: {
@@ -44,7 +44,7 @@ const CustomerHome = (props) => {
       },
       body: JSON.stringify({
         "quantity": quantity,
-        "customerid" :props.data.id ,
+        "customerid": props.data.id,
         "supplierid": props.data.supplierid,
       }),
     })
@@ -56,7 +56,7 @@ const CustomerHome = (props) => {
         console.log('problem placing the order ' + error.message);
         throw error;
       });
-    }
+  }
 
   return (
 
@@ -68,17 +68,18 @@ const CustomerHome = (props) => {
         placeholderTextColor="#a9a9a9"
         autoCapitalize="none"
         onChangeText={handleQuantity} />
-      <Button
-        style={styles.cancelButton}
-        title="Cancel"
-        onPress={() => BackHandler.exitApp()}
-      />
-      <Button
-        style={styles.submitButton}
-        title="Order"
-        onPress={() => placeOrder()}
-      />
-
+      <View style={styles.fixToText}>
+        <Button
+          style={styles.cancelButton}
+          title="Cancel"
+          onPress={() => BackHandler.exitApp()}
+        />
+        <Button
+          style={styles.submitButton}
+          title="Order"
+          onPress={() => placeOrder()}
+        />
+      </View>
     </ScrollView>
   )
 }
@@ -94,10 +95,17 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'black',
     borderWidth: 1
-},
-textcss: {
-  color: 'black'
-},
+  },
+  fixToText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 20,
+  },
+  textcss: {
+    color: 'black',
+    marginLeft: 15,
+    alignContent: 'center',
+  },
 });
 
 export default CustomerHome;

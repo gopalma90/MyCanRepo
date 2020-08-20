@@ -71,10 +71,10 @@ const SupplierHome = (props) => {
     };
   */
 
-  showAddress = ( item ) => {
-    console.log ( "door no = " + item.addr.doorno)
-    
-    Alert.alert ( 'Customer Address', "doorno:{item.addr.doorno}, {item.addr.floorno}floor, {item.addr.street}, {item.addr.aptname}, {item.addr.area}, {item.addr.city} ", [{text: 'OK'}]);
+  showAddress = (item) => {
+    console.log("door no = " + item.addr.doorno)
+
+    Alert.alert('Customer Address', "doorno:{item.addr.doorno}, {item.addr.floorno}floor, {item.addr.street}, {item.addr.aptname}, {item.addr.area}, {item.addr.city} ", [{ text: 'OK' }]);
   }
   renderData = ({ item }) => {
     return (
@@ -90,16 +90,16 @@ const SupplierHome = (props) => {
       <ScrollView style={styles.container}>
 
         <Text style={styles.textcss} >Click to get orders</Text>
-        <Button
-          style={styles.cancelButton}
-          title="Cancel"
-          onPress={() => BackHandler.exitApp()}
-        />
-        <Button
-          style={styles.submitButton}
-          title="GetOrder"
-          onPress={() => getOrders()}
-        />
+        <View style={styles.fixToText}>
+          <Button
+            title="Cancel"
+            onPress={() => BackHandler.exitApp()}
+          />
+          <Button
+            title="GetOrder"
+            onPress={() => getOrders()}
+          />
+        </View>
       </ScrollView>
     )
   }
@@ -108,6 +108,7 @@ const SupplierHome = (props) => {
       //<View style={styles.container}>{renderData()}</View>
       <SafeAreaView style={styles.container}>
         <FlatList
+          style={styles.listcolor}
           data={orders}
           renderItem={renderData}
         />
@@ -129,25 +130,23 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1
   },
+  fixToText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 20,
+  },
   textcss: {
-    color: 'black'
-  },
-  submitButton: {
-    backgroundColor: 'green',
-    marginRight: 20,
-    width: 10,
-    height: 40,
-  },
-  cancelButton: {
-    backgroundColor: 'red',
-    marginLeft: 20,
-    width: 10,
-    height: 40
+    color: 'black',
+    marginLeft: 15,
+    alignContent: 'center',
   },
   item: {
     padding: 10,
     marginVertical: 8,
     marginHorizontal: 10,
+  },
+  listcolor: {
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 20,

@@ -1,5 +1,5 @@
 
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import Register from './Register'
 import CustomerHome from './CustomerHome'
 import SupplierHome from './SupplierHome'
@@ -11,6 +11,7 @@ import {
   View,
   Text,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -22,32 +23,28 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-class HomeScreen extends Component {
-  constructor(props) {
-    super(props);
+//class HomeScreen extends Component {
+function HomeScreen (props){
 
-    this.state = {
-      clientdata: {},
-      isLoading: true,
-    }
-    this._retrieveData();
-  }
+  const [clientdata, setclientdata] = useState()
+  const [isLoading, setisLoading] = useState(true)
+
+  useEffect(() => {
+    _retrieveData();
+  }, []);
+  
 
   _retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('@clientdata');
       if (value !== null) {
         console.log(" suppliedid = " + value)
-        this.setState({
-          clientdata: JSON.parse(value),
-          isLoading: false,
-        });
+        setclientdata(JSON.parse(value));
+        setisLoading(false)
       }
       else {
         console.log(" no client data found ");
-        this.setState({
-          isLoading: false,
-        })
+        setisLoading(false)
       }
     } catch (error) {
       console.log("prob reading from async storage " + error.message)
@@ -60,36 +57,41 @@ class HomeScreen extends Component {
     }
   */
 
-  isNotEmpty = (obj) => {
+  function isEmpty (obj) {
     for (var prop in obj) {
       if (obj.hasOwnProperty(prop))
-        return true;
+        return false;
     }
-    return false;
+    return true;
   }
-  render() {
-
-    if (this.state.isLoading) {
-      return <Text> Loading page </Text> // TODO: show loading page.
+  
+    if (isLoading) {
+      return <View style={styles.container}><ActivityIndicator size="large"/></View>
     }
     else {
 
-      console.log(" data = " + this.state.clientdata )
+      console.log(" data = " + clientdata)
 
-      if (this.state.clientdata.hasOwnProperty('shopname')) {
-        return <SupplierHome data={this.state.clientdata} />;
-
-      }
-      else if (this.state.clientdata.hasOwnProperty('supplierid')) {
-        return <CustomerHome data={this.state.clientdata} />;
-      }
-
-      else {
+      if ( isEmpty(clientdata)) {
         return <Register />
       }
+      else if (clientdata.hasOwnProperty('shopname')) {
+        return <SupplierHome data={clientdata} />;
+      }
+      else if (clientdata.hasOwnProperty('supplierid')) {
+        return <CustomerHome data={clientdata} />;
+      }
+      else {
+        console.log( " nothing interesting to do here ")
+      }
     }
-  };
+}
 
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+});
 
 export default HomeScreen;
