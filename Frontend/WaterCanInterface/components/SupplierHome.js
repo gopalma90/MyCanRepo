@@ -72,14 +72,40 @@ const SupplierHome = (props) => {
   */
 
   showAddress = (item) => {
-    console.log("door no = " + item.addr.doorno)
 
-    Alert.alert('Customer Address', "doorno:{item.addr.doorno}, {item.addr.floorno}floor, {item.addr.street}, {item.addr.aptname}, {item.addr.area}, {item.addr.city} ", [{ text: 'OK' }]);
+    var add;
+    if (item.addr.doorno)
+      add = "door no: " + item.addr.doorno
+    if (item.addr.floorno)
+      add += "   Floor no: " + item.addr.floorno
+    if (item.addr.street)
+      add += "   Street name: " + item.addr.street
+    if (item.addr.aptname)
+      add += "   Apartment name: " + item.addr.aptname
+    if (item.addr.area)
+      add += "   Area: " + item.addr.area
+    if (item.addr.city)
+      add += "   City: " + item.addr.city
+
+    Alert.alert('Customer Address', JSON.stringify(add), [{ text: 'OK' }]);
   }
+
+
   renderData = ({ item }) => {
     return (
       <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
         <Text style={styles.title}>Name: {item.customer.name} quantity: {item.orders.quantity}</Text>
+        <View style={styles.buttonstyles} >
+          <Button title="Delivered"
+            onPress={() => Alert.alert('Delivered', 'Can delivered', [{ 'text': 'OK' }])}
+          />
+        </View>
+        <View style={styles.buttonstyles} >
+          <Button title="Paid"
+            onPress={() => Alert.alert('Paid', 'Paid money', [{ 'text': 'OK' }])}
+          />
+        </View>
+
       </TouchableOpacity>
     );
   };
@@ -107,6 +133,7 @@ const SupplierHome = (props) => {
     return (
       //<View style={styles.container}>{renderData()}</View>
       <SafeAreaView style={styles.container}>
+        <Text style={styles.textcss}> Your Pending orders are </Text>
         <FlatList
           style={styles.listcolor}
           data={orders}
@@ -139,17 +166,32 @@ const styles = StyleSheet.create({
     color: 'black',
     marginLeft: 15,
     alignContent: 'center',
+    fontSize: 30,
   },
+  buttonstyles: {
+    marginLeft: 10,
+    height: 30,
+    width: 90,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
   item: {
-    padding: 10,
-    marginVertical: 8,
+    padding: 5,
+    flexDirection: 'row',
+    borderColor: 'black',
     marginHorizontal: 10,
+    marginVertical: 8,
+    borderWidth: 1,
   },
   listcolor: {
     backgroundColor: 'white',
   },
   title: {
-    fontSize: 20,
+    fontSize: 15,
+    alignContent: 'center',
+    marginLeft: 10,
+    marginRight: 10,
   },
 });
 
