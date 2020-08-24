@@ -220,8 +220,8 @@ public class SupplierServices {
 			}
 
 			for (Map.Entry<Long, Double> customerdata : custbalance.entrySet()) {
-				Address addr = addrepo.getAddressOfCustomer((Long) customerdata.getKey());
 				Customer cus = customerrepo.getCustomerdata((Long) customerdata.getKey());
+				Address addr = addrepo.getAddressOfCustomer(cus.getAddressid());
 
 				resp.add(new PendingMoneyResponse(cus, addr, (Double) customerdata.getValue()));
 			}
@@ -232,4 +232,21 @@ public class SupplierServices {
 
 		return resp;
 	}
+
+	@Transactional
+	public Boolean supplierMoneySettled(Long supplierId, String Request) {
+		Boolean resp = false;
+		try {
+			JSONObject obj = (JSONObject) new JSONObject(Request);
+			JSONObject customer = obj.getJSONObject("customer");
+			pendingpaymentrepo.updateMoneySettled(supplierId, customer.getLong("id"));
+			resp = true;
+		} catch (Exception e) {
+			System.out.println(" exception at supplierMoneySettled" + e);
+		}
+		System.out.println(" supplierMoneySettled response for supplierid " + supplierId + " is = " + resp);
+
+		return resp;
+	}
+
 }

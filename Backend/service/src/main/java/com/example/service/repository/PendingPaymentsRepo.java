@@ -26,4 +26,9 @@ public interface PendingPaymentsRepo extends JpaRepository<PendingPayments, Long
 	@Query(value = "select * from pendingpayments where supplierid=?1 and is_paid=false", nativeQuery = true)
 	public List<PendingPayments> findSuppliersPendingAmount(Long supplierId);
 
+	@Modifying(clearAutomatically = true)
+	@Transactional
+	@Query(value = "update pendingpayments set is_paid=true where supplierid=?1 and customerid=?2", nativeQuery = true)
+	public void updateMoneySettled(Long supplierId, Long customerId);
+
 }

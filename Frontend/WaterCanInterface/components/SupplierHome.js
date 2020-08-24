@@ -174,6 +174,33 @@ const SupplierHome = (props) => {
     );
   };
 
+  updatePendingPayments = ( item ) => {
+    setpayments(prevpaymentlist => {
+      return prevpaymentlist.filter(singlepayment => singlepayment.customer.id != item.customer.id)
+    });
+  }
+
+  updateFullPaymentData = (item) => {
+
+    fetch(`${props.url}/supplier/${props.data.id}/updatemoneysettled`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    })
+      .then((response) => response.json())
+      .then((responsejson) => {
+        if (responsejson) {
+          updatePendingPayments(item)
+        }
+      })
+      .catch(function (error) {
+        console.log('problem setting payment status ' + error.message);
+        throw error;
+      });
+  }
+
   renderPendingPaymentData = ({ item }) => {
     return (
       <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
@@ -182,7 +209,7 @@ const SupplierHome = (props) => {
         
         <View style={styles.buttonstyles} >
           <Button title="Paid"
-            onPress={() =>  Alert.alert('text', "text message", [{ text: 'OK' }]) }  // ToDo, set payment history
+            onPress={() => updateFullPaymentData(item) }  // ToDo, set payment history
           />
         </View>
         
@@ -202,7 +229,7 @@ const SupplierHome = (props) => {
     })
       .then((response) => response.json())
       .then((responsejson) => {
-        setpayments(responsejson)
+        setpayments( responsejson)
         setGotPendingAmount(1);
       })
       .catch(function (error) {
@@ -230,6 +257,11 @@ const SupplierHome = (props) => {
     )
   }
   else if (gotPendingAmount) {
+    if ( payments.length == 0){
+      return (
+        <Text style={styles.textcss}> You dont have any pending payments</Text>
+      )
+    }
     return (
       //<View style={styles.container}>{renderData()}</View>
       <SafeAreaView style={styles.container}>

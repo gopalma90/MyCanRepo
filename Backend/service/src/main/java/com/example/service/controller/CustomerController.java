@@ -31,29 +31,6 @@ public class CustomerController {
 	@PostMapping("/v1/customer")
 	public Customer addCustomer(@RequestBody String request) {
 		System.out.println("Addcustomer Request " + request);
-		/*
-		 * Customer cus = new Customer(); JSONObject obj; try { obj = (JSONObject) new
-		 * JSONObject(request);
-		 * 
-		 * Address add = new Address((Integer)
-		 * obj.getJSONObject("address").getInt("doorno"), (Integer)
-		 * obj.getJSONObject("address").getInt("floor"), (String)
-		 * obj.getJSONObject("address").getString("street"), (String)
-		 * obj.getJSONObject("address").getString("apartmentname"), (String)
-		 * obj.getJSONObject("address").getString("area"), (String)
-		 * obj.getJSONObject("address").getString("city"), (String)
-		 * obj.getJSONObject("address").getString("state"));
-		 * 
-		 * Address updatedadd = addrepo.save(add);
-		 * 
-		 * cus.setName((String) obj.get("name").toString());
-		 * cus.setAddressid(updatedadd.getId()); cus.setContact((String)
-		 * obj.get("contact").toString());
-		 * cus.setSupplierid(Long.parseLong(obj.get("supplierid").toString())); } catch
-		 * (Exception e) { System.out.println(" exception thrown ");
-		 * System.out.println(e); } if (Objects.nonNull(cus)) { return repo.save(cus); }
-		 * else return null;
-		 */
 		return service.addCustomer(request);
 	}
 
@@ -65,30 +42,12 @@ public class CustomerController {
 	@PutMapping("/v1/customer/{id}")
 	public Customer updateCustomerData(@PathVariable(value = "id") Long Id, @Valid @RequestBody Customer Details) {
 
-		/*
-		 * Customer customer = (repo.findById(Id)).get();
-		 * 
-		 * customer.setAddressid(Details.getAddressid());
-		 * customer.setContact(Details.getContact());
-		 * customer.setName(Details.getName());
-		 * 
-		 * Customer updateddetails = repo.save(customer); return updateddetails;
-		 */
 		return service.updateCustomerData(Id, Details);
 	}
 
 	@PostMapping("/v1/placeorder")
 	public Boolean placeOrder(@RequestBody String request) {
-		/*
-		 * try { JSONObject obj = new JSONObject(request); Long customerid =
-		 * Long.parseLong(obj.get("customerid").toString()); Long supplierid =
-		 * Long.parseLong(obj.get("supplierid").toString()); Integer qty =
-		 * Integer.parseInt(obj.get("quantity").toString()); Optional<Customer> op =
-		 * repo.findById(customerid); if (op.isPresent()) { OrderDetails order = new
-		 * OrderDetails(customerid, supplierid, qty, new Date()); orderrepo.save(order);
-		 * } else { System.out.println(" Invalid customer "); } } catch (Exception e) {
-		 * System.out.println(" exception thrown "); System.out.println(e); } return 1;
-		 */
+
 		System.out.println("placeOrder Request " + request);
 		return service.placeOrder(request);
 	}
