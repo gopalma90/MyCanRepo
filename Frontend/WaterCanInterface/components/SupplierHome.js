@@ -37,12 +37,16 @@ const Item = ({ item, onPress, style }) => (
 const SupplierHome = (props) => {
 
   const [orders, setorders] = useState()
+  const [payments, setpayments] = useState()
   const [gotOrders, setGotOrders] = useState(0)
+  const [gotPendingAmount, setGotPendingAmount] = useState(0)
+
+
 
   getOrders = () => {
     console.log(' getorders supplierid ' + props.data.id);
 
-    fetch(`http://192.168.1.5:8080/api/v1/supplier/${props.data.id}/getpendingorders`, {
+    fetch(`${props.url}/supplier/${props.data.id}/getpendingorders`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -58,18 +62,6 @@ const SupplierHome = (props) => {
         throw error;
       });
   }
-
-  /*
-    renderData = () => {
-  
-      for ( var order in orders ) {
-        return orders.map(order => {
-          return <Text>Name: {order.customer.name} quantity: {order.orders.quantity}</Text>;
-        });
-      }
-      
-    };
-  */
 
   showAddress = (item) => {
 
@@ -90,28 +82,167 @@ const SupplierHome = (props) => {
     Alert.alert('Customer Address', JSON.stringify(add), [{ text: 'OK' }]);
   }
 
+  updateOrders = (item) => {
+    setorders(prevOrders => {
+      return prevOrders.filter(singleorder => singleorder.orders.id != item.orders.id)
+    });
+  }
 
-  renderData = ({ item }) => {
+  updateDeliveredStatus = (item) => {
+    fetch(`${props.url}/supplier/${props.data.id}/candelivered`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    })
+      .then((response) => response.json())
+      .then((responsejson) => {
+        if (responsejson) {
+          updateOrders(item)
+        }
+      })
+      .catch(function (error) {
+        console.log('problem setting delivery status ' + error.message);
+        throw error;
+      });
+  }
+
+  updatePaidStatus = (item) => {
+    fetch(`${props.url}/supplier/${props.data.id}/paidforcan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    })
+      .then((response) => response.json())
+      .then((responsejson) => {
+        if (responsejson) {
+          updateOrders(item)
+        }
+      })
+      .catch(function (error) {
+        console.log('problem setting delivery status ' + error.message);
+        throw error;
+      });
+  }
+
+  updateOrderDismissStatus = (item) => {
+    fetch(`${props.url}/supplier/${props.data.id}/dismissorder`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    })
+      .then((response) => response.json())
+      .then((responsejson) => {
+        if (responsejson) {
+          updateOrders(item)
+        }
+      })
+      .catch(function (error) {
+        console.log('problem setting delivery status ' + error.message);
+        throw error;
+      });
+  }
+
+  renderOrdersData = ({ item }) => {
     return (
       <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
-        <Text style={styles.title}>Name: {item.customer.name} quantity: {item.orders.quantity}</Text>
+        <Text style={styles.title}>Name: {item.customer.name}; Quantity: {item.orders.quantity}; Contact: {item.customer.contact}</Text>
+        <View style={styles.buttonsstyling}> 
         <View style={styles.buttonstyles} >
           <Button title="Delivered"
-            onPress={() => Alert.alert('Delivered', 'Can delivered', [{ 'text': 'OK' }])}
+            onPress={() => updateDeliveredStatus(item)}
           />
         </View>
         <View style={styles.buttonstyles} >
           <Button title="Paid"
-            onPress={() => Alert.alert('Paid', 'Paid money', [{ 'text': 'OK' }])}
+            onPress={() => updatePaidStatus(item)}
           />
+        </View>
+        <View style={styles.buttonstyles} >
+          <Button title="Dismiss"
+            onPress={() => updateOrderDismissStatus(item)}
+          />
+        </View>
         </View>
 
       </TouchableOpacity>
     );
   };
 
+  renderPendingPaymentData = ({ item }) => {
+    return (
+      <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
+        <Text style={styles.title}>Name: {item.customer.name}; Amount: {item.amount}; Contact: {item.customer.contact}</Text>
+        <View style={styles.buttonsstyling}> 
+        
+        <View style={styles.buttonstyles} >
+          <Button title="Paid"
+            onPress={() =>  Alert.alert('text', "text message", [{ text: 'OK' }]) }  // ToDo, set payment history
+          />
+        </View>
+        
+        </View>
 
-  if (!gotOrders) {
+      </TouchableOpacity>
+    );
+  };
+
+  getPendingPayments = () => {
+
+    fetch(`${props.url}/supplier/${props.data.id}/getpendingpayments`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((responsejson) => {
+        setpayments(responsejson)
+        setGotPendingAmount(1);
+      })
+      .catch(function (error) {
+        console.log('problem reading the payments ' + error.message);
+        throw error;
+      });
+  }
+
+  if (gotOrders) {
+    if ( orders.length == 0){
+      return (
+        <Text style={styles.textcss}> You dont have any pending orders </Text>
+      )
+    }
+    return (
+      //<View style={styles.container}>{renderData()}</View>
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.textcss}> Your Pending orders are </Text>
+        <FlatList
+          style={styles.listcolor}
+          data={orders}
+          renderItem={renderOrdersData}
+        />
+      </SafeAreaView>
+    )
+  }
+  else if (gotPendingAmount) {
+    return (
+      //<View style={styles.container}>{renderData()}</View>
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.textcss}> Your Payment balances are </Text>
+        <FlatList
+          style={styles.listcolor}
+          data={payments}
+          renderItem={renderPendingPaymentData}
+        />
+      </SafeAreaView>
+    )
+  }
+  else {
     return (
       <ScrollView style={styles.container}>
 
@@ -125,21 +256,12 @@ const SupplierHome = (props) => {
             title="GetOrder"
             onPress={() => getOrders()}
           />
+          <Button
+            title="Get pending payments"
+            onPress={() => getPendingPayments()}
+          />
         </View>
       </ScrollView>
-    )
-  }
-  else {
-    return (
-      //<View style={styles.container}>{renderData()}</View>
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.textcss}> Your Pending orders are </Text>
-        <FlatList
-          style={styles.listcolor}
-          data={orders}
-          renderItem={renderData}
-        />
-      </SafeAreaView>
     )
   }
 
@@ -169,18 +291,18 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   buttonstyles: {
-    marginLeft: 10,
+    marginLeft: 5,
     height: 30,
     width: 90,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
-
-  item: {
-    padding: 5,
+  buttonsstyling: {
     flexDirection: 'row',
+  },
+  item: {
     borderColor: 'black',
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     marginVertical: 8,
     borderWidth: 1,
   },

@@ -37,7 +37,7 @@ const CustomerHome = (props) => {
     //console.log (" supplierid = " + {props.data.supplierid} );
 
 
-    fetch('http://192.168.1.5:8080/api/v1/placeorder', {
+    fetch(`${props.url}/placeorder`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

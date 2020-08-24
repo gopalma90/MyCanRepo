@@ -73,13 +73,13 @@ function HomeScreen (props){
       console.log(" data = " + clientdata)
 
       if ( isEmpty(clientdata)) {
-        return <Register />
+        return <Register url={props.url}/>
       }
       else if (clientdata.hasOwnProperty('shopname')) {
-        return <SupplierHome data={clientdata} />;
+        return <SupplierHome data={clientdata} url={props.url} />;
       }
       else if (clientdata.hasOwnProperty('supplierid')) {
-        return <CustomerHome data={clientdata} />;
+        return <CustomerHome data={clientdata} url={props.url} />;
       }
       else {
         console.log( " nothing interesting to do here ")

@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 
-const Register = () => {
+const Register = (props) => {
 
     const [contactno, setContactno] = useState()
     const [name, setName] = useState()
@@ -66,11 +66,20 @@ const Register = () => {
         }
     }
     registerData = () => {
+        if ( isNaN(doorno) ) {
+            Alert.alert('Invalid data', 'Doorno should be a number.', [{ text: 'OK' }]); 
+        }
+        if ( isNaN(floorno) ) {
+            Alert.alert('Invalid data', 'Floorno should be a number.', [{ text: 'OK' }]); 
+        }
         if (shopname && supplierid) {
             Alert.alert('Invalid data', 'Please provide either Shop name  if you are supplier and SupplierId if you are consumer. Not both ', [{ text: 'OK' }]);
         }
+        if ( isNaN(contactno) ){
+            Alert.alert('Invalid data', 'Contact number should not contain letters', [{ text: 'OK' }]); 
+        }
         if (shopname) {
-            fetch('http://192.168.1.5:8080/api/v1/supplier', {
+            fetch(`${props.url}/supplier`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,7 +102,8 @@ const Register = () => {
                 .then((response) => response.json())
                 .then((responsejson) => {
                     _setData(JSON.stringify(responsejson));
-                    Alert.alert('Successfully registered', 'Press Ok and restart the app.', [{ text: 'OK' }])
+                    var iddata = " SupplierId " +  responsejson.id 
+                    Alert.alert('Successfully registered', JSON.stringify(iddata) , [{ text: 'OK and Restart' }])
                 })
                 .catch(function (error) {
                     console.log('There has been a problem with your fetch operation: ' + error.message);
@@ -101,7 +111,7 @@ const Register = () => {
                 });
         }
         else if (supplierid) {
-            fetch('http://192.168.1.5:8080/api/v1/customer', {
+            fetch(`${props.url}/customer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -133,7 +143,7 @@ const Register = () => {
                 });
         }
         else {
-            Alert.alert('Invalid data', 'Please provide either Shop name  if you are supplier and SupplierId if you are consumer', [{ text: 'OK' }]);
+            Alert.alert('Invalid data', 'Please provide Shopname if you are supplier and SupplierId if you are consumer', [{ text: 'OK' }]);
 
         }
     }
@@ -205,7 +215,7 @@ const Register = () => {
                 autoCapitalize="none"
                 onChangeText={handleState} />
 
-            <Text style={styles.textcss}>Enter the Shopname if you are a supplier</Text>
+            <Text style={styles.textcss1}>Enter the Shopname if you are a supplier</Text>
 
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
@@ -214,7 +224,7 @@ const Register = () => {
                 autoCapitalize="none"
                 onChangeText={handleShopName} />
 
-            <Text style={styles.textcss} >Enter the SupplierId if you are a Consumer</Text>
+            <Text style={styles.textcss1} >Enter the SupplierId if you are a Consumer</Text>
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
                 placeholder="SupplierId"
@@ -243,7 +253,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     input: {
-        margin: 10,
+        margin: 8,
         height: 40,
         borderColor: 'black',
         borderWidth: 1
@@ -254,6 +264,12 @@ const styles = StyleSheet.create({
         margin: 20,
      },
     textcss: {
+        color: 'black',
+        marginLeft : 15,
+        alignContent : 'center',
+        fontSize : 30,
+    },
+    textcss1: {
         color: 'black',
         marginLeft : 15,
         alignContent : 'center',

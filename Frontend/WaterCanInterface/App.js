@@ -24,31 +24,18 @@ import {
   Colors,
   DebugInstructions,
   ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+} from 'react-native/Libraries/NewAppScreen'
+import GlobalVars from './GlobalVars'
 
-const App: () => React$Node = () => {
-/*
-  _retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@clientdata');
-      if (value !== null) {
-        console.log('supplied id = ' + value);
-        return value;
-      }
-      else {
-        console.log(" no client data found ");
-      }
-    } catch (error) {
-      console.log("prob reading from async storage " + error.message)
-    }
-  }
-*/
-  //const [clientdata, setdata] = useState(_retrieveData());
-  
 
+//const App: () => React$Node = () => {
+const App = () => {
+  console.log ( " server data : " + GlobalVars.BASE_URL )
+  var baseurl = 'http://' + GlobalVars.BASE_URL + ':' + GlobalVars.PORT + GlobalVars.VERSION
+  console.log( " baseurl = " + baseurl)
   return (
     <>
-      <HomeScreen  />
+      <HomeScreen url={baseurl}/>
     </>
   );
 };
