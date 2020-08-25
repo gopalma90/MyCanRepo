@@ -30,9 +30,7 @@ import GlobalVars from './GlobalVars'
 
 //const App: () => React$Node = () => {
 const App = () => {
-  console.log ( " server data : " + GlobalVars.BASE_URL )
   var baseurl = 'http://' + GlobalVars.BASE_URL + ':' + GlobalVars.PORT + GlobalVars.VERSION
-  console.log( " baseurl = " + baseurl)
   return (
     <>
       <HomeScreen url={baseurl}/>

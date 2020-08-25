@@ -24,7 +24,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-
+/*
 
 const Item = ({ item, onPress, style }) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
@@ -32,13 +32,14 @@ const Item = ({ item, onPress, style }) => (
   </TouchableOpacity>
 );
 
-
+*/
 
 const SupplierHome = (props) => {
 
   const [orders, setorders] = useState()
-  const [payments, setpayments] = useState()
   const [gotOrders, setGotOrders] = useState(0)
+  
+  const [payments, setpayments] = useState()
   const [gotPendingAmount, setGotPendingAmount] = useState(0)
 
 

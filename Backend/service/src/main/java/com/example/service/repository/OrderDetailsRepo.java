@@ -21,12 +21,12 @@ public interface OrderDetailsRepo extends JpaRepository<OrderDetails, Long> {
 	public Integer updateDeliveryStatus(Long orderid, Date date, Integer isdelivered);
 
 	@Query(value = "SELECT * FROM orderdetails where customerid = ?1 AND isdelivered=0 AND iscustomercancelled=0 AND issuppliercancelled=0", nativeQuery = true)
-	public List<OrderDetails> findCustomerOrders(Long customerid);
+	public List<OrderDetails> findCustomerPendingOrders(Long customerid);
 
 	@Transactional
 	@Modifying(clearAutomatically = true)
-	@Query(value = "update orderdetails set iscustomercancelled=1 where id=?1", nativeQuery = true)
-	public void cancelOrderByCustomer(Long orderId);
+	@Query(value = "update orderdetails set iscustomercancelled=1 where id=?1 and customerid=?2", nativeQuery = true)
+	public void cancelOrderByCustomer(Long orderId, Long customerid);
 
 	@Transactional
 	@Modifying(clearAutomatically = true)

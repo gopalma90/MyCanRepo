@@ -1,6 +1,5 @@
 package com.example.service.services;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +16,6 @@ import com.example.service.model.OrderDetails;
 import com.example.service.repository.AddressRepo;
 import com.example.service.repository.CustomerRepo;
 import com.example.service.repository.OrderDetailsRepo;
-import com.example.service.responsedata.CustomerOrders;
 
 @Service
 public class CustomerServices {
@@ -115,36 +113,32 @@ public class CustomerServices {
 	}
 
 	@Transactional
-	public List<CustomerOrders> getCustomerOrders(Long Id) {
-
-		List<CustomerOrders> response = new ArrayList<CustomerOrders>();
-
-		try {
-			List<OrderDetails> res = orderrepo.findCustomerOrders(Id);
-
-			for (int i = 0; i < res.size(); i++) {
-				OrderDetails temp = res.get(i);
-				response.add(new CustomerOrders(null, null, temp));
-			}
-		} catch (Exception e) {
-			System.out.println(" getSupplierOrders Exception " + e);
-			return null;
-		}
-		System.out.println(" getSupplierOrders response for supplierid " + Id + " is = " + response);
-
-		return response;
-	}
-
-	@Transactional
-	public Boolean cancelOrder(Long orderId) {
+	public Boolean cancelOrder(Long orderId, String details) {
 		Boolean res = false;
+
 		try {
-			orderrepo.cancelOrderByCustomer(orderId);
+			JSONObject obj = (JSONObject) new JSONObject(details);
+
+			orderrepo.cancelOrderByCustomer(orderId, obj.getLong("customerid"));
 			res = true;
 		} catch (Exception e) {
 			System.out.println(" exception from cancel order " + e);
 		}
 		return res;
+	}
+
+	public List<OrderDetails> getCustomerPendingOrders(Long customerId) {
+		List<OrderDetails> response = null;
+
+		try {
+			response = orderrepo.findCustomerPendingOrders(customerId);
+		} catch (Exception e) {
+			System.out.println(" getCustomerPendingOrders Exception " + e);
+			response = null;
+		}
+		System.out.println(" getCustomerPendingOrders response for Customerid " + customerId + " is = " + response);
+
+		return response;
 	}
 
 }

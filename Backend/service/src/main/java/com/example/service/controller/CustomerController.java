@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.service.model.Customer;
+import com.example.service.model.OrderDetails;
 import com.example.service.services.CustomerServices;
 
 @RestController
@@ -53,10 +56,18 @@ public class CustomerController {
 	}
 
 	@PutMapping("/v1/cancelorder/{id}/bycustomer")
-	public Boolean cancelOrder(@PathVariable(value = "id") Long orderId) {
-		System.out.println("cancel order Request " + orderId);
+	public Boolean cancelOrder(@PathVariable(value = "id") Long orderId, @Valid @RequestBody String details) {
+		System.out.println("cancel order Request " + orderId + "Request = " + details);
 
-		return service.cancelOrder(orderId);
+		return service.cancelOrder(orderId, details);
 	}
 
+	@GetMapping("/v1/getcustomerpendingorders/{id}")
+	public ResponseEntity<List<OrderDetails>> getCustomerPendingOrders(@PathVariable(value = "id") Long customerId) {
+		System.out.println("getCustomerPendingOrders " + customerId);
+
+		List<OrderDetails> response = service.getCustomerPendingOrders(customerId);
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 }

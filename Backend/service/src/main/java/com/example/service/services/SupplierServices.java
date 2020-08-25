@@ -167,7 +167,6 @@ public class SupplierServices {
 		try {
 			obj = (JSONObject) new JSONObject(Request);
 			JSONObject order = obj.getJSONObject("orders");
-			// TODO: update issuppliercancelled to 1 here. update ordertable
 			orderrepo.cancelOrderBySupplier((Long) order.getLong("id"));
 			res = true;
 		} catch (Exception e) {
