@@ -38,7 +38,7 @@ const SupplierHome = (props) => {
 
   const [orders, setorders] = useState()
   const [gotOrders, setGotOrders] = useState(0)
-  
+
   const [payments, setpayments] = useState()
   const [gotPendingAmount, setGotPendingAmount] = useState(0)
 
@@ -152,30 +152,37 @@ const SupplierHome = (props) => {
   renderOrdersData = ({ item }) => {
     return (
       <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
-        <Text style={styles.title}>Name: {item.customer.name}; Quantity: {item.orders.quantity}; Contact: {item.customer.contact}</Text>
-        <View style={styles.buttonsstyling}> 
-        <View style={styles.buttonstyles} >
-          <Button title="Delivered"
-            onPress={() => updateDeliveredStatus(item)}
-          />
+        <View style={styles.textstyles}>
+          <View style={styles.contentstyle}>
+            <Text style={styles.title}>Name: {item.customer.name}</Text>
+            <Text style={styles.title}>Quantity: {item.orders.quantity} </Text>
+            <Text style={styles.title}>Contact: {item.customer.contact}</Text>
+          </View>
+          <View style={styles.deliveredbuttonstyles}>
+            <Button title="Delivered"
+              onPress={() => updateDeliveredStatus(item)}
+            />
+          </View>
         </View>
-        <View style={styles.buttonstyles} >
-          <Button title="Paid"
-            onPress={() => updatePaidStatus(item)}
-          />
-        </View>
-        <View style={styles.buttonstyles} >
-          <Button title="Dismiss"
-            onPress={() => updateOrderDismissStatus(item)}
-          />
-        </View>
+        <View style={styles.buttonsstyling}>
+          <View style={styles.paidbuttonstyles} >
+
+            <Button title="Cancel"
+              onPress={() => updateOrderDismissStatus(item)}
+            />
+          </View>
+          <View style={styles.dismissbuttonstyles} >
+            <Button title="Paid"
+              onPress={() => updatePaidStatus(item)}
+            />
+          </View>
         </View>
 
       </TouchableOpacity>
     );
   };
 
-  updatePendingPayments = ( item ) => {
+  updatePendingPayments = (item) => {
     setpayments(prevpaymentlist => {
       return prevpaymentlist.filter(singlepayment => singlepayment.customer.id != item.customer.id)
     });
@@ -206,14 +213,14 @@ const SupplierHome = (props) => {
     return (
       <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
         <Text style={styles.title}>Name: {item.customer.name}; Amount: {item.amount}; Contact: {item.customer.contact}</Text>
-        <View style={styles.buttonsstyling}> 
-        
-        <View style={styles.buttonstyles} >
-          <Button title="Paid"
-            onPress={() => updateFullPaymentData(item) }  // ToDo, set payment history
-          />
-        </View>
-        
+        <View style={styles.buttonsstyling}>
+
+          <View style={styles.buttonstyles} >
+            <Button title="Paid"
+              onPress={() => updateFullPaymentData(item)}  // ToDo, set payment history
+            />
+          </View>
+
         </View>
 
       </TouchableOpacity>
@@ -230,7 +237,7 @@ const SupplierHome = (props) => {
     })
       .then((response) => response.json())
       .then((responsejson) => {
-        setpayments( responsejson)
+        setpayments(responsejson)
         setGotPendingAmount(1);
       })
       .catch(function (error) {
@@ -240,7 +247,7 @@ const SupplierHome = (props) => {
   }
 
   if (gotOrders) {
-    if ( orders.length == 0){
+    if (orders.length == 0) {
       return (
         <Text style={styles.textcss}> You dont have any pending orders </Text>
       )
@@ -258,7 +265,7 @@ const SupplierHome = (props) => {
     )
   }
   else if (gotPendingAmount) {
-    if ( payments.length == 0){
+    if (payments.length == 0) {
       return (
         <Text style={styles.textcss}> You dont have any pending payments</Text>
       )
@@ -280,24 +287,31 @@ const SupplierHome = (props) => {
       <ScrollView style={styles.container}>
 
         <Text style={styles.textcss} >Click to get orders</Text>
-        <View style={styles.fixToText}>
+
+        <View style={styles.functionalbuttonstyles}>
+
+          <View style={styles.homebuttonsstyles}>
+            <Button
+              title="GetOrder"
+              onPress={() => getOrders()}
+            />
+          </View>
+          <View style={styles.homebuttonsstyles}>
+            <Button
+              title="Get pending payments"
+              onPress={() => getPendingPayments()}
+            />
+          </View>
+        </View>
+        <View style={styles.cancelbuttonsstyles}>
           <Button
             title="Cancel"
             onPress={() => BackHandler.exitApp()}
-          />
-          <Button
-            title="GetOrder"
-            onPress={() => getOrders()}
-          />
-          <Button
-            title="Get pending payments"
-            onPress={() => getPendingPayments()}
           />
         </View>
       </ScrollView>
     )
   }
-
 }
 
 
@@ -306,37 +320,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  input: {
-    margin: 10,
-    height: 40,
-    borderColor: 'black',
-    borderWidth: 1
-  },
-  fixToText: {
+  functionalbuttonstyles: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 20,
+    marginTop: "5%",
+    marginHorizontal: "2%",
   },
   textcss: {
     color: 'black',
-    marginLeft: 15,
+    marginLeft: "2%",
     alignContent: 'center',
-    fontSize: 30,
   },
-  buttonstyles: {
-    marginLeft: 5,
-    height: 30,
-    width: 90,
+
+  homebuttonstyles: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
+  cancelbuttonsstyles: {
+    margin: "3%",
+    marginHorizontal: "2%",
+  },
   buttonsstyling: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom : "1%",
+  },
+  buttonstyles: {
+    height: "75%",
+    width: "90%",
+    flexDirection: 'row',
+    marginLeft: "5%",
   },
   item: {
     borderColor: 'black',
-    marginHorizontal: 5,
-    marginVertical: 8,
+    marginHorizontal: "1%",
+    marginVertical: "2%",
     borderWidth: 1,
   },
   listcolor: {
@@ -345,9 +363,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     alignContent: 'center',
-    marginLeft: 10,
-    marginRight: 10,
   },
+  textstyles: {
+    flexDirection: 'row',
+  },
+  deliveredbuttonstyles: {
+    marginTop : "5%",
+    marginLeft: "5%",
+  }
 });
 
 export default SupplierHome;

@@ -231,7 +231,7 @@ const Register = (props) => {
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleSupplierId} />
-            <View style={styles.fixToText}>
+            <View style={styles.buttonstyle}>
                 <Button  
                     color = "#dc143c"
                     title="Cancel"
@@ -253,25 +253,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     input: {
-        margin: 8,
-        height: 40,
+        margin: "2%",
+        height: "5%",
         borderColor: 'black',
         borderWidth: 1
     },
-    fixToText: {
+    buttonstyle: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        margin: 20,
+        margin: "5%",
      },
     textcss: {
         color: 'black',
-        marginLeft : 15,
+        marginLeft : "5%",
         alignContent : 'center',
-        fontSize : 30,
     },
     textcss1: {
         color: 'black',
-        marginLeft : 15,
+        marginLeft : "5%",
         alignContent : 'center',
     },
   

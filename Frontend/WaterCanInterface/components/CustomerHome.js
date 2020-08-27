@@ -124,7 +124,7 @@ const CustomerHome = (props) => {
         <View style={styles.contentstyle}>
           <View style={styles.itemstyles} >
             <Text style={styles.title}> Quantity: {item.quantity}</Text>
-            <Text style={styles.title}> DateOrdered: {date}</Text>
+            <Text style={styles.title}> Date: {date}</Text>
           </View>
           <View style={styles.buttonstyles}>
             <Button title="Cancel Order"
@@ -188,61 +188,61 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   input: {
-    margin: 10,
-    height: 35,
-    width: 250,
+    margin: "3%",
+    height: "60%",
+    width: "60%",
     borderColor: 'black',
     borderWidth: 1
   },
   item: {
     borderColor: 'black',
-    marginHorizontal: 5,
-    marginVertical: 8,
+    marginHorizontal: "1%",
+    marginVertical: "1%",
     borderWidth: 1,
-    height: 80,
+    height: "30%",
+    flex: 1,
+    marginTop:"1%",
+
   },
   fixToText: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    margin: 20,
+    justifyContent: 'center',
+    margin: "3%",
   },
   textcss: {
     color: 'black',
-    marginLeft: 15,
+    marginLeft: "3%",
     alignContent: 'center',
     fontSize: 20,
   },
   orderbuttonstyles: {
-    marginTop: 10,
+    marginTop: "3%",
   },
   getorderbuttonstyles: {
-    margin: 20,
+    margin: "3%",
   },
   listcolor: {
     backgroundColor: 'white',
   },
   title: {
-    fontSize: 20,
     alignContent: 'center',
     marginLeft: 10,
-    marginRight: 10,
-    
   },
   itemstyles: {
-    marginLeft: 5,
-    height: 70,
-    width: 500,
+    height: "150%",
+    width: "100%",
     flexDirection: 'column',
+    marginTop:"1%",
     justifyContent: 'space-around',
   },
   buttonstyles: {
-    marginLeft: 300,
-    marginTop:-60,
-    width: 90,
-    height: 90,
+    marginLeft: "65%",
+    width: "30%",
+    height: "20%",
   },
   contentstyle : {
-    height: 90,
+    height: "30%",
+    justifyContent: 'space-around',
     flexDirection: 'column',
   }
   
