@@ -1,1 +1,18 @@
+TO TEST LOCALLY:
+SET DBHOST env variable to "jdbc:mysql://localhost:3306/watercan" to test it locally. 
 Run `mvn spring-boot:run` to start the server. 
+Hit api's from postman. 
+
+TO Dockerize :
+
+Build the image:
+	Run the below command. " mvn clean install "
+
+Bring up mysql in container using the below command.
+	docker container run  -p 3306:3306 --name mysqldb -e MYSQL_ROOT_PASSWORD=Root@123 -e MYSQL_DATABASE=watercan -d mysql:8
+	
+	If we get port already in use error:
+		"systemctl stop mysql" run this to stop the existing mysql daemon
+Bring up the service image using the below command.
+	docker run -tid -p 8080:8080 --name service --link mysqldb gopalrmd90/canservice:0.0.1
+
