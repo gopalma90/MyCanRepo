@@ -1,4 +1,4 @@
-FROM openjdk:14.0
+FROM openjdk:14
 
 MAINTAINER Gopalan M A<gopalrmd90@gmail.com>
 

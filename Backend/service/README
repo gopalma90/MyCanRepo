@@ -6,6 +6,7 @@ Hit api's from postman.
 TO Dockerize :
 
 Build the image:
+	Download openjdk:14 using "docker pull openjdk:14" 
 	Run the below command. " mvn clean install "
 
 Bring up mysql in container using the below command.
