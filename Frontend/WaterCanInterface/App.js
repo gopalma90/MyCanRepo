@@ -5,7 +5,7 @@
  * @format
  * @flow strict-local
  */
-
+import 'react-native-gesture-handler';
 import React, { useState , useEffect } from 'react';
 import HomeScreen from './components/HomeScreen'
 import {
@@ -27,15 +27,19 @@ import {
 } from 'react-native/Libraries/NewAppScreen'
 import GlobalVars from './GlobalVars'
 
+export const urlContext = React.createContext();
 
 //const App: () => React$Node = () => {
 console.disableYellowBox = true;  // TO Suppress warnings
 
 const App = () => {
   var baseurl = 'http://' + GlobalVars.BASE_URL + ':' + GlobalVars.PORT + GlobalVars.VERSION
+
   return (
     <>
-      <HomeScreen url={baseurl}/>
+      <urlContext.Provider value={baseurl} >
+        <HomeScreen url={baseurl}/>
+      </urlContext.Provider>
     </>
   );
 };

@@ -1,30 +1,30 @@
 
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Register from './Register'
-import CustomerHome from './CustomerHome'
-import SupplierHome from './SupplierHome'
-
+import CustomerHome from './CustomerScreens/CustomerHome'
+import SupplierHome from './SupplierScreens/SupplierHome'
+import GetOrders from './SupplierScreens/GetOrders'
+import GetPendingPayments from './SupplierScreens/GetPendingPayments'
+import GetPendingOrders from './CustomerScreens/GetPendingOrders'
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
-  Text,
-  StatusBar,
   ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-//class HomeScreen extends Component {
-function HomeScreen (props){
+export const dataContext = React.createContext();
+
+
+const SupplierStack = createStackNavigator();
+const CustomerStack = createStackNavigator();
+
+
+
+function HomeScreen(props) {
 
   const [clientdata, setclientdata] = useState()
   const [isLoading, setisLoading] = useState(true)
@@ -32,7 +32,7 @@ function HomeScreen (props){
   useEffect(() => {
     _retrieveData();
   }, []);
-  
+
 
   _retrieveData = async () => {
     try {
@@ -51,40 +51,53 @@ function HomeScreen (props){
     }
   }
 
-  /*
-    componentDidMount() {
-      this.setState({ clientdata : this._retrieveData() } );
-    }
-  */
-
-  function isEmpty (obj) {
+  function isEmpty(obj) {
     for (var prop in obj) {
       if (obj.hasOwnProperty(prop))
         return false;
     }
     return true;
   }
-  
-    if (isLoading) {
-      return <View style={styles.container}><ActivityIndicator size="large"/></View>
+
+  if (isLoading) {
+    return <View style={styles.container}><ActivityIndicator size="large" /></View>
+  }
+  else {
+
+    console.log(" data = " + clientdata)
+
+    if (isEmpty(clientdata)) {
+      return <Register url={props.url} />
+    }
+    else if (clientdata.hasOwnProperty('shopname')) {
+      return (
+        <dataContext.Provider value={clientdata} >
+          <NavigationContainer>
+            <SupplierStack.Navigator>
+              <SupplierStack.Screen name="Supplierhome" component={SupplierHome} options={{ title: 'Home' }} />
+              <SupplierStack.Screen name="GetOrders" component={GetOrders} options={{ title: 'PendingOrders' }} />
+              <SupplierStack.Screen name="GetPendingPayments" component={GetPendingPayments} options={{ title: 'PendingPayments' }} />
+            </SupplierStack.Navigator>
+          </NavigationContainer>
+        </dataContext.Provider>
+      );
+    }
+    else if (clientdata.hasOwnProperty('supplierid')) {
+      return (
+        <dataContext.Provider value={clientdata} >
+          <NavigationContainer>
+            <CustomerStack.Navigator>
+              <CustomerStack.Screen name="Customerhome" component={CustomerHome} options={{ title : 'Home'}} />
+              <CustomerStack.Screen name="GetPendingOrders" component={GetPendingOrders} options={{ title : 'PendingOrders'}} />
+            </CustomerStack.Navigator>
+          </NavigationContainer>
+        </dataContext.Provider>
+      );
     }
     else {
-
-      console.log(" data = " + clientdata)
-
-      if ( isEmpty(clientdata)) {
-        return <Register url={props.url}/>
-      }
-      else if (clientdata.hasOwnProperty('shopname')) {
-        return <SupplierHome data={clientdata} url={props.url} />;
-      }
-      else if (clientdata.hasOwnProperty('supplierid')) {
-        return <CustomerHome data={clientdata} url={props.url} />;
-      }
-      else {
-        console.log( " nothing interesting to do here ")
-      }
+      console.log(" nothing interesting to do here ")
     }
+  }
 }
 
 const styles = StyleSheet.create({

@@ -1,12 +1,15 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useContext } from 'react'
 import {
-    View, ScrollView, Text, Button, BackHandler, TouchableHighlight, TextInput, StyleSheet,
+    View, ScrollView, Text, Button, BackHandler, TextInput, StyleSheet,
     Alert,
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
+import {urlContext} from '../App'
+
 
 const Register = (props) => {
-
+    const baseurl =    useContext(urlContext);
+    
     const [contactno, setContactno] = useState()
     const [name, setName] = useState()
     const [doorno, setDoorno] = useState()
@@ -20,7 +23,6 @@ const Register = (props) => {
     const [supplierid, setSupplierId] = useState()
 
 
-    const [datasource, setDatasource] = useState()
     const [id, setId] = useState()
 
     handleName = (text) => {
@@ -79,7 +81,7 @@ const Register = (props) => {
             Alert.alert('Invalid data', 'Contact number should not contain letters', [{ text: 'OK' }]); 
         }
         if (shopname) {
-            fetch(`${props.url}/supplier`, {
+            fetch(`${baseurl}/supplier`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +113,7 @@ const Register = (props) => {
                 });
         }
         else if (supplierid) {
-            fetch(`${props.url}/customer`, {
+            fetch(`${baseurl}/customer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
