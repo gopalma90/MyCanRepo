@@ -1,4 +1,4 @@
-import React, { Component, useState, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {
     View, ScrollView, Text, Button, BackHandler, TextInput, StyleSheet,
     Alert,
@@ -108,8 +108,8 @@ const Register = (props) => {
                     Alert.alert('Successfully registered', JSON.stringify(iddata) , [{ text: 'OK and Restart' }])
                 })
                 .catch(function (error) {
-                    console.log('There has been a problem with your fetch operation: ' + error.message);
-                    throw error;
+                    console.log('There has been a problem in registering the supplier ' + error.message);
+                    Alert.alert('Sorry', 'Registration failed. Please restart the app and try again', [{ text: 'OK'}]  );
                 });
         }
         else if (supplierid) {
@@ -141,7 +141,7 @@ const Register = (props) => {
                 })
                 .catch(function (error) {
                     console.log('There has been a problem with your fetch operation: ' + error.message);
-                    throw error;
+                    Alert.alert('Sorry', 'Registration failed. Please restart the app and try again', [{ text: 'OK'}]  );
                 });
         }
         else {

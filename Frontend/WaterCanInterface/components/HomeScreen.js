@@ -12,6 +12,7 @@ import {
   StyleSheet,
   View,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -48,6 +49,7 @@ function HomeScreen(props) {
       }
     } catch (error) {
       console.log("prob reading from async storage " + error.message)
+      Alert.alert("Sorry", 'Unable to get your details. Please restart the app', [{ text: 'OK'}] );
     }
   }
 
@@ -95,7 +97,7 @@ function HomeScreen(props) {
       );
     }
     else {
-      console.log(" nothing interesting to do here ")
+      console.log(" Nothing interesting to do here ")
     }
   }
 }
