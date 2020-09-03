@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.service.model.Supplier;
 import com.example.service.responsedata.CustomerOrders;
+import com.example.service.responsedata.PendingCanResponse;
 import com.example.service.responsedata.PendingMoneyResponse;
 import com.example.service.services.SupplierServices;
 
@@ -97,4 +98,22 @@ public class SupplierController {
 		System.out.println(" supplierMoneySettled with supplierId " + supplierId + " request " + Request);
 		return service.supplierMoneySettled(supplierId, Request);
 	}
+
+	@PutMapping("/v1/supplier/{id}/updatecustomerpendingcans")
+	public Boolean updateCustomerPendingCans(@PathVariable(value = "id") Long supplierId, @RequestBody String Request) {
+
+		System.out.println(" updateCustomerPendingCans with supplierId " + supplierId + " request " + Request);
+		return service.updateCustomerPendingCans(supplierId, Request);
+	}
+
+	@GetMapping("/v1/supplier/{id}/getallpendingcans")
+	public ResponseEntity<List<PendingCanResponse>> getAllPendingCans(@PathVariable(value = "id") Long supplierId) {
+
+		System.out.println(" getpendingcans with supplierId " + supplierId);
+		List<PendingCanResponse> resp = service.getAllPendingCans(supplierId);
+
+		return ResponseEntity.status(HttpStatus.OK).body(resp);
+
+	}
+
 }

@@ -16,14 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.service.model.Address;
 import com.example.service.model.Customer;
 import com.example.service.model.OrderDetails;
+import com.example.service.model.PendingCans;
 import com.example.service.model.PendingPayments;
 import com.example.service.model.Supplier;
 import com.example.service.repository.AddressRepo;
 import com.example.service.repository.CustomerRepo;
 import com.example.service.repository.OrderDetailsRepo;
+import com.example.service.repository.PendingCansRepo;
 import com.example.service.repository.PendingPaymentsRepo;
 import com.example.service.repository.SupplierRepo;
 import com.example.service.responsedata.CustomerOrders;
+import com.example.service.responsedata.PendingCanResponse;
 import com.example.service.responsedata.PendingMoneyResponse;
 
 @Service
@@ -39,6 +42,8 @@ public class SupplierServices {
 	CustomerRepo customerrepo;
 	@Autowired
 	PendingPaymentsRepo pendingpaymentrepo;
+	@Autowired
+	PendingCansRepo pendingcansrepo;
 
 	@Transactional
 	public Supplier addSupplier(String request) {
@@ -246,6 +251,55 @@ public class SupplierServices {
 		System.out.println(" supplierMoneySettled response for supplierid " + supplierId + " is = " + resp);
 
 		return resp;
+	}
+
+	@Transactional
+	public Boolean updateCustomerPendingCans(Long supplierId, String Request) {
+		Boolean returnVal = false;
+		try {
+			JSONObject obj = (JSONObject) new JSONObject(Request);
+
+			JSONObject customer = obj.getJSONObject("customer");
+			Long customerId = customer.getLong("id");
+			JSONObject pendingCans = obj.getJSONObject("pendingcans");
+			Integer quantity = pendingCans.getInt("quantity");
+
+			PendingCans data = pendingcansrepo.getExistingCustomerData(customerId, supplierId);
+			if (data != null) {
+				System.out.println("data not null");
+				pendingcansrepo.updateExistingCustomerData(customerId, supplierId, quantity);
+				returnVal = true;
+			} else {
+				pendingcansrepo.save(new PendingCans(customerId, supplierId, quantity));
+				returnVal = true;
+			}
+
+		} catch (Exception e) {
+			System.out.println(" exception at updateCustomerPendingcans" + e);
+		}
+		System.out.println(" updateCustomerPendingcans response for supplierid " + supplierId + " is = " + returnVal);
+
+		return returnVal;
+	}
+
+	public List<PendingCanResponse> getAllPendingCans(Long supplierId) {
+		List<PendingCanResponse> pendingCanResponse = new ArrayList<PendingCanResponse>();
+
+		try {
+			List<PendingCans> pendingcans = pendingcansrepo.getAllPendingcans(supplierId);
+
+			for (int i = 0; i < pendingcans.size(); i++) {
+				Customer cus = customerrepo.getCustomerdata(pendingcans.get(i).getCustomerId());
+				Address addr = addrepo.getAddressOfCustomer(cus.getAddressid());
+				pendingCanResponse.add(new PendingCanResponse(cus, addr, pendingcans.get(i).getPendingCanQuantity()));
+			}
+		} catch (Exception e) {
+			System.out.println(" exception at getTotalPendingcans" + e);
+		}
+
+		System.out.println(" getTotalPendingCans response for supplierid " + supplierId);
+
+		return pendingCanResponse;
 	}
 
 }

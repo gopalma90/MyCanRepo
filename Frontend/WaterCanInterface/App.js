@@ -31,7 +31,7 @@ export const urlContext = React.createContext();
 
 //const App: () => React$Node = () => {
 console.disableYellowBox = true;  // TO Suppress warnings
-
+//LogBox.ignoreAllLogs()
 const App = () => {
   var baseurl = 'http://' + GlobalVars.BASE_URL + ':' + GlobalVars.PORT + GlobalVars.VERSION
 

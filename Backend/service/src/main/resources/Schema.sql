@@ -65,3 +65,15 @@ CREATE TABLE IF NOT EXISTS pendingpayments (
   updated_at DATETIME,
   PRIMARY KEY ( id )
 );
+
+
+CREATE TABLE IF NOT EXISTS pendingcans (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  updated_at DATETIME,
+  customerid BIGINT, 
+  quantity INT,
+  supplierid BIGINT,
+  PRIMARY KEY ( id )
+);
+
+

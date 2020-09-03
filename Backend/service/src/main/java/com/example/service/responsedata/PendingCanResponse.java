@@ -3,21 +3,21 @@ package com.example.service.responsedata;
 import com.example.service.model.Address;
 import com.example.service.model.Customer;
 
-public class PendingMoneyResponse {
+public class PendingCanResponse {
 	private Customer customer;
 	private Address addr;
 
-	private Double amount;
+	private Integer quantity;
 
-	public PendingMoneyResponse() {
-		super();
-	}
-
-	public PendingMoneyResponse(Customer customer, Address addr, Double amount) {
+	public PendingCanResponse(Customer customer, Address addr, Integer quantity) {
 		super();
 		this.customer = customer;
 		this.addr = addr;
-		this.amount = amount;
+		this.quantity = quantity;
+	}
+
+	public PendingCanResponse() {
+		super();
 	}
 
 	public Customer getCustomer() {
@@ -36,12 +36,12 @@ public class PendingMoneyResponse {
 		this.addr = addr;
 	}
 
-	public Double getAmount() {
-		return amount;
+	public Integer getQuantity() {
+		return quantity;
 	}
 
-	public void setAmount(Double amount) {
-		this.amount = amount;
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
 	}
 
 }

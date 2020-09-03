@@ -7,7 +7,12 @@ import CustomerHome from './CustomerScreens/CustomerHome'
 import SupplierHome from './SupplierScreens/SupplierHome'
 import GetOrders from './SupplierScreens/GetOrders'
 import GetPendingPayments from './SupplierScreens/GetPendingPayments'
+import CustomerOrder from './SupplierScreens/CustomerOrder'
+import GetPendingCans from './SupplierScreens/GetPendingCans'
+
 import GetPendingOrders from './CustomerScreens/GetPendingOrders'
+
+
 import {
   StyleSheet,
   View,
@@ -77,8 +82,11 @@ function HomeScreen(props) {
           <NavigationContainer>
             <SupplierStack.Navigator>
               <SupplierStack.Screen name="Supplierhome" component={SupplierHome} options={{ title: 'Home' }} />
-              <SupplierStack.Screen name="GetOrders" component={GetOrders} options={{ title: 'PendingOrders' }} />
-              <SupplierStack.Screen name="GetPendingPayments" component={GetPendingPayments} options={{ title: 'PendingPayments' }} />
+              <SupplierStack.Screen name="GetOrders" component={GetOrders} options={{ title: 'Pending orders' }} />
+              <SupplierStack.Screen name="GetPendingPayments" component={GetPendingPayments} options={{ title: 'Pending payments' }} />
+              <SupplierStack.Screen name="CustomerOrder" component={CustomerOrder} options={{ title: 'Order details' }} />
+              <SupplierStack.Screen name="GetPendingCans" component={GetPendingCans} options={{ title: 'Pending cans' }} />
+
             </SupplierStack.Navigator>
           </NavigationContainer>
         </dataContext.Provider>

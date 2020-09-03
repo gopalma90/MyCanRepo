@@ -1,5 +1,5 @@
 
-import React, { Component, useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -14,11 +14,8 @@ import {
 
 import { dataContext } from '../HomeScreen'
 import { urlContext } from '../../App'
-//import { NavigationContainer } from '@react-navigation/native';
-//import { createStackNavigator } from '@react-navigation/stack';
 
-
-const GetOrders = ({ navigation }) => {
+const GetOrders = ({ navigation , route}) => {
 
   const baseurl = useContext(urlContext)
   const data = useContext(dataContext)
@@ -53,6 +50,14 @@ const GetOrders = ({ navigation }) => {
   }, []);
 
 
+  useEffect(() => {
+    if (route.params?.order) {
+      var order = route.params.order
+      updateOrders(order);
+    }
+  }, [route.params?.order]);
+
+
   showAddress = (item) => {
 
     var add;
@@ -72,104 +77,41 @@ const GetOrders = ({ navigation }) => {
     Alert.alert('Customer Address', JSON.stringify(add), [{ text: 'OK' }]);
   }
 
-
-  updateDeliveredStatus = (item) => {
-    fetch(`${baseurl}/supplier/${data.id}/candelivered`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(item),
-    })
-      .then((response) => response.json())
-      .then((responsejson) => {
-        if (responsejson) {
-          updateOrders(item)
-        }
-      })
-      .catch(function (error) {
-        console.log('problem setting delivery status ' + error.message);
-        throw error;
-      });
-  }
-
-  updateOrderDismissStatus = (item) => {
-    fetch(`${baseurl}/supplier/${data.id}/dismissorder`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(item),
-    })
-      .then((response) => response.json())
-      .then((responsejson) => {
-        if (responsejson) {
-          updateOrders(item)
-        }
-      })
-      .catch(function (error) {
-        console.log('problem setting delivery status ' + error.message);
-        throw error;
-      });
-  }
-
   updateOrders = (item) => {
     setorders(prevOrders => {
       return prevOrders.filter(singleorder => singleorder.orders.id != item.orders.id)
     });
   }
 
-  updatePaidStatus = (item) => {
-    fetch(`${baseurl}/supplier/${data.id}/paidforcan`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(item),
-    })
-      .then((response) => response.json())
-      .then((responsejson) => {
-        if (responsejson) {
-          updateOrders(item)
-        }
-      })
-      .catch(function (error) {
-        console.log('problem setting delivery status ' + error.message);
-        throw error;
-      });
-  }
-
-
   renderOrdersData = ({ item }) => {
     return (
+
       <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
         <View style={styles.textstyles}>
+       
           <View style={styles.contentstyle}>
             <Text style={styles.title}>Name: {item.customer.name}</Text>
             <Text style={styles.title}>Quantity: {item.orders.quantity} </Text>
             <Text style={styles.title}>Contact: {item.customer.contact}</Text>
           </View>
-          <View style={styles.deliveredbuttonstyles}>
-            <Button title="Delivered"
-              onPress={() => updateDeliveredStatus(item)}
-            />
-          </View>
-        </View>
-        <View style={styles.buttonsstyling}>
+        
           <View style={styles.paidbuttonstyles} >
 
-            <Button title="Cancel"
-              onPress={() => updateOrderDismissStatus(item)}
+            <Button title="Get more details"
+              onPress={ () => {
+                navigation.navigate('CustomerOrder', {
+                   data: item,
+                   
+                  } );
+               } }
             />
-          </View>
-          <View style={styles.dismissbuttonstyles} >
-            <Button title="Paid"
-              onPress={() => updatePaidStatus(item)}
-            />
-          </View>
-        </View>
 
+          </View>
+
+        </View>
       </TouchableOpacity>
+
+
     );
   };
 

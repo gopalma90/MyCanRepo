@@ -30,17 +30,23 @@ const SupplierHome = ({ navigation }) => {
 
         <View style={styles.homebuttonsstyles}>
           <Button
-            title="GetPendingOrder"
+            title="Get Pending Orders"
             onPress={() => navigation.navigate('GetOrders')}
           />
         </View>
         <View style={styles.homebuttonsstyles}>
           <Button
-            title="Get pending payments"
+            title="Get Pending payments"
             onPress={() => navigation.navigate('GetPendingPayments')}
           />
         </View>
       </View>
+      <View style={styles.homebuttonsstyles}>
+          <Button
+            title="Get Pending Cans"
+            onPress={() => navigation.navigate('GetPendingCans')}
+          />
+        </View>
       <View style={styles.cancelbuttonsstyles}>
         <Button
           title="Exit"
@@ -58,9 +64,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   functionalbuttonstyles: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: "5%",
+    marginHorizontal: "2%",
+  },
+  homebuttonsstyles: {
+    margin: "3%",
     marginHorizontal: "2%",
   },
   textcss: {
