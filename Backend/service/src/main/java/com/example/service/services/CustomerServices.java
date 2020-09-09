@@ -39,14 +39,16 @@ public class CustomerServices {
 		JSONObject obj;
 		try {
 			obj = (JSONObject) new JSONObject(request);
+			JSONObject addressobj = obj.getJSONObject("address");
 
-			Address add = new Address((Integer) obj.getJSONObject("address").getInt("doorno"),
-					(Integer) obj.getJSONObject("address").getInt("floor"),
-					(String) obj.getJSONObject("address").getString("street"),
-					(String) obj.getJSONObject("address").getString("apartmentname"),
+			String floor = addressobj.has("floorno") ? addressobj.getString("floorno") : " ";
+			String apartmentname = addressobj.has("apartmentname") ? addressobj.getString("apartmentname") : " ";
+			String state = addressobj.has("state") ? addressobj.getString("state") : " ";
+
+			Address add = new Address((String) obj.getJSONObject("address").getString("doorno"), (String) floor,
+					(String) obj.getJSONObject("address").getString("street"), (String) apartmentname,
 					(String) obj.getJSONObject("address").getString("area"),
-					(String) obj.getJSONObject("address").getString("city"),
-					(String) obj.getJSONObject("address").getString("state"));
+					(String) obj.getJSONObject("address").getString("city"), (String) state);
 
 			Address updatedadd = addrepo.save(add);
 

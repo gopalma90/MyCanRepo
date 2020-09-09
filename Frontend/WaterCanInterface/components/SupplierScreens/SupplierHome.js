@@ -24,8 +24,6 @@ const SupplierHome = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
 
-      <Text style={styles.textcss} >Welcome </Text>
-
       <View style={styles.functionalbuttonstyles}>
 
         <View style={styles.homebuttonsstyles}>
@@ -45,6 +43,12 @@ const SupplierHome = ({ navigation }) => {
           <Button
             title="Get Pending Cans"
             onPress={() => navigation.navigate('GetPendingCans')}
+          />
+        </View>
+        <View style={styles.homebuttonsstyles}>
+          <Button
+            title="Settings"
+            onPress={() => navigation.navigate('SupplierSettings')}
           />
         </View>
       <View style={styles.cancelbuttonsstyles}>

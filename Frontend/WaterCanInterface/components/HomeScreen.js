@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import Register from './Register'
 import CustomerHome from './CustomerScreens/CustomerHome'
 import SupplierHome from './SupplierScreens/SupplierHome'
@@ -9,6 +10,8 @@ import GetOrders from './SupplierScreens/GetOrders'
 import GetPendingPayments from './SupplierScreens/GetPendingPayments'
 import CustomerOrder from './SupplierScreens/CustomerOrder'
 import GetPendingCans from './SupplierScreens/GetPendingCans'
+import SupplierSettings from './SupplierScreens/SupplierSettings'
+import BusinessSettings from './SupplierScreens/BusinessSettings'
 
 import GetPendingOrders from './CustomerScreens/GetPendingOrders'
 
@@ -81,11 +84,13 @@ function HomeScreen(props) {
         <dataContext.Provider value={clientdata} >
           <NavigationContainer>
             <SupplierStack.Navigator>
-              <SupplierStack.Screen name="Supplierhome" component={SupplierHome} options={{ title: 'Home' }} />
+              <SupplierStack.Screen name="Supplierhome" component={SupplierHome} options={{ title: `Welcome ${clientdata.name}` }} />
               <SupplierStack.Screen name="GetOrders" component={GetOrders} options={{ title: 'Pending orders' }} />
               <SupplierStack.Screen name="GetPendingPayments" component={GetPendingPayments} options={{ title: 'Pending payments' }} />
               <SupplierStack.Screen name="CustomerOrder" component={CustomerOrder} options={{ title: 'Order details' }} />
               <SupplierStack.Screen name="GetPendingCans" component={GetPendingCans} options={{ title: 'Pending cans' }} />
+              <SupplierStack.Screen name="SupplierSettings" component={SupplierSettings} options={{ title: 'Settings' }} />
+              <SupplierStack.Screen name="BusinessSettings" component={BusinessSettings} options={{ title: 'Business Settings' }} />
 
             </SupplierStack.Navigator>
           </NavigationContainer>
@@ -97,7 +102,7 @@ function HomeScreen(props) {
         <dataContext.Provider value={clientdata} >
           <NavigationContainer>
             <CustomerStack.Navigator>
-              <CustomerStack.Screen name="Customerhome" component={CustomerHome} options={{ title : 'Home'}} />
+              <CustomerStack.Screen name="Customerhome" component={CustomerHome} options={{ title : `Welcome ${clientdata.name}`}} />
               <CustomerStack.Screen name="GetPendingOrders" component={GetPendingOrders} options={{ title : 'PendingOrders'}} />
             </CustomerStack.Navigator>
           </NavigationContainer>

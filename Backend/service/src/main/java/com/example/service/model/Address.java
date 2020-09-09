@@ -1,15 +1,23 @@
 package com.example.service.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import javax.persistence.*;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "address")
@@ -21,10 +29,10 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
-	private Integer doorno;
+	@NotBlank
+	private String doorno;
 
-	private Integer floor;
+	private String floor;
 
 	@NotBlank
 	private String street;
@@ -48,7 +56,7 @@ public class Address {
 	@Temporal(TemporalType.TIMESTAMP)
 	@LastModifiedDate
 	private Date updatedAt;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -57,19 +65,19 @@ public class Address {
 		this.id = id;
 	}
 
-	public Integer getDoorno() {
+	public String getDoorno() {
 		return doorno;
 	}
 
-	public void setDoorno(Integer doorno) {
+	public void setDoorno(String doorno) {
 		this.doorno = doorno;
 	}
 
-	public Integer getFloor() {
+	public String getFloor() {
 		return floor;
 	}
 
-	public void setFloor(Integer floor) {
+	public void setFloor(String floor) {
 		this.floor = floor;
 	}
 
@@ -129,7 +137,7 @@ public class Address {
 		this.updatedAt = updatedAt;
 	}
 
-	public Address( @NotNull Integer doorno, Integer floor, @NotBlank String street, String aptname,
+	public Address(@NotBlank String doorno, String floor, @NotBlank String street, String aptname,
 			@NotBlank String area, @NotBlank String city, String state) {
 		super();
 		this.doorno = doorno;

@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS address (
   city VARCHAR(255),
   area VARCHAR(255),
   created_at  DATETIME  NOT NULL,
-  doorno INT ,
-  floorno INT
+  doorno VARCHAR(255),
+  floorno VARCHAR(255),
   street VARCHAR(255),
   updated_at DATETIME,
   PRIMARY KEY ( id )

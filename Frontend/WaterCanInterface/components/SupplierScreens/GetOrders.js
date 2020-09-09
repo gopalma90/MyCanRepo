@@ -11,14 +11,16 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
+import axios from 'axios'
 
 import { dataContext } from '../HomeScreen'
-import { urlContext } from '../../App'
+import { urlContext, timeoutContext } from '../../App'
 
-const GetOrders = ({ navigation , route}) => {
+const GetOrders = ({ navigation, route }) => {
 
   const baseurl = useContext(urlContext)
   const data = useContext(dataContext)
+  const defaultTimeout = useContext(timeoutContext)
 
   const [orders, setorders] = useState()
   const [gotOrders, setGotOrders] = useState(0)
@@ -28,24 +30,32 @@ const GetOrders = ({ navigation , route}) => {
   useEffect(() => {
     console.log(' getorders supplierid ' + data.id);
 
-    fetch(`${baseurl}/supplier/${data.id}/getpendingorders`, {
+    axios({
+      url: `${baseurl}/supplier/${data.id}/getpendingorders`,
       method: 'GET',
+      timeout: defaultTimeout,
       headers: {
         'Content-Type': 'application/json',
       },
     })
-      .then((response) => response.json())
       .then((responsejson) => {
-        setorders(responsejson)
-        console.log(" orders = " + JSON.stringify(responsejson))
+        if (responsejson.data) {
+          setorders(responsejson.data)
+          console.log(" orders = " + JSON.stringify(responsejson.data))
 
-        setGotOrders(1);
-        setisLoading(false);
+          setGotOrders(1);
+          setisLoading(false);
+        }
+        else {
+          Alert.alert('Sorry', 'unable to fetch your orders. Please try again later', [{ text: 'OK' }]);
+
+        }
 
       })
       .catch(function (error) {
         console.log('problem reading the order ' + error.message);
-        throw error;
+        Alert.alert('Sorry', 'unable to fetch your orders. Retry later', [{ text: 'OK' }]);
+
       });
   }, []);
 
@@ -88,22 +98,22 @@ const GetOrders = ({ navigation , route}) => {
 
       <TouchableOpacity onPress={() => showAddress(item)} style={[styles.item]}>
         <View style={styles.textstyles}>
-       
+
           <View style={styles.contentstyle}>
             <Text style={styles.title}>Name: {item.customer.name}</Text>
             <Text style={styles.title}>Quantity: {item.orders.quantity} </Text>
             <Text style={styles.title}>Contact: {item.customer.contact}</Text>
           </View>
-        
+
           <View style={styles.paidbuttonstyles} >
 
             <Button title="Get more details"
-              onPress={ () => {
+              onPress={() => {
                 navigation.navigate('CustomerOrder', {
-                   data: item,
-                   
-                  } );
-               } }
+                  data: item,
+
+                });
+              }}
             />
 
           </View>

@@ -9,14 +9,17 @@ import {
     Button,
     SafeAreaView,
     ActivityIndicator,
+    Alert,
 } from 'react-native';
+import axios from 'axios'
 
 import { dataContext } from '../HomeScreen'
-import { urlContext } from '../../App'
+import { urlContext , timeoutContext } from '../../App'
 
 const GetPendingOrders = ({ navigation }) => {
 
     const baseurl = useContext(urlContext)
+    const defaultTimeout = useContext ( timeoutContext )
     const data = useContext(dataContext)
 
     const [pendingorders, setPendingOrders] = useState()
@@ -29,46 +32,52 @@ const GetPendingOrders = ({ navigation }) => {
     }, []);
 
 
-
     getCustomerOrders = () => {
-        fetch(`${baseurl}/getcustomerpendingorders/${data.id}`, {
+        axios({ 
+            url: `${baseurl}/getcustomerpendingorders/${data.id}`, 
             method: 'GET',
+            timeout : defaultTimeout,
             headers: {
                 'Content-Type': 'application/json',
             }
         })
-            .then((response) => response.json())
             .then((responsejson) => {
-                setPendingOrders(responsejson)
+                setPendingOrders(responsejson.data)
                 setGotPendingOrders(1)
                 setisLoading(false)
             })
-            .catch(function (error) {
+            .catch( error=> {
                 console.log('problem retrieving the order ' + error.message);
-                throw error;
+                Alert.alert('UnSuccessful', "Unable to get your pending order" , [{ text: 'OK' }])
             });
     }
 
+
+
     updateOrderDismissStatus = (item) => {
 
-        fetch(`${baseurl}/cancelorder/${item.id}/bycustomer`, {
+        axios( {
+            url: `${baseurl}/cancelorder/${item.id}/bycustomer`, 
             method: 'PUT',
+            timeout : defaultTimeout,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(item),
+            data: JSON.stringify(item),
         })
-            .then((response) => response.json())
             .then((responsejson) => {
-                if (responsejson) {
+                if (responsejson.data) {
                     setPendingOrders(prevOrders => {
                         return prevOrders.filter(singleorder => singleorder.id != item.id)
                     });
                 }
+                else {
+                    Alert.alert( "Failure", " Unable to cancel order. Try again later", [{text: "OK"}])
+                }
             })
-            .catch(function (error) {
+            .catch( error => {
                 console.log('problem cancelling order ' + error.message);
-                throw error;
+                Alert.alert( "Failure", "Unable to cancel order. Try again later", [{text: "OK"}])
             });
     }
 

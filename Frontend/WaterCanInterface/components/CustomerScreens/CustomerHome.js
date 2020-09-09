@@ -9,8 +9,10 @@ import {
   Button,
   Alert,
 } from 'react-native';
+import axios from 'axios'
 
-import { urlContext } from '../../App'
+
+import { urlContext, timeoutContext } from '../../App'
 import { dataContext } from '../HomeScreen'
 import GetPendingOrders from './GetPendingOrders'
 
@@ -19,6 +21,7 @@ const CustomerHome = ({ navigation }) => {
 
   const baseurl = useContext(urlContext)
   const data = useContext(dataContext)
+  const defaultTimeout = useContext(timeoutContext)
 
   const [quantity, setQuantity] = useState()
 
@@ -27,30 +30,41 @@ const CustomerHome = ({ navigation }) => {
   }
 
   placeOrder = () => {
+    if (isNaN(quantity)) {
+      Alert.alert('Invalid data', 'quantity should be a number', [{ text: 'OK' }]);
+      return;
+    }
+    if (quantity <= 0) {
+      Alert.alert('Invalid entry', 'order quantity should be greater than 0', [{ text: 'OK' }]);
+      return;
+    }
 
-    fetch(`${baseurl}/placeorder`, {
+
+    axios({
+      url: `${baseurl}/placeorder`,
       method: 'POST',
+      timeout: defaultTimeout,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
+      data: JSON.stringify({
         "quantity": quantity,
         "customerid": data.id,
         "supplierid": data.supplierid,
       }),
     })
-      .then((response) => response.json())
       .then((responsejson) => {
-        if (responsejson) {
+        if (responsejson.data) {
           Alert.alert('Success', 'Order placed successfuly.', [{ text: 'OK' }])
         }
         else {
           Alert.alert('Failure', 'Unable to place order. Try later', [{ text: 'OK' }])
         }
       })
-      .catch(function (error) {
+      .catch(error => {
         console.log('problem placing the order ' + error.message);
-        throw error;
+        Alert.alert('Failure', 'Unable to place order. Try later', [{ text: 'OK' }])
+
       });
   }
 

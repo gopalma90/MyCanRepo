@@ -11,9 +11,10 @@ import {
     SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
+import axios from 'axios'
 
 import { dataContext } from '../HomeScreen'
-import { urlContext } from '../../App'
+import { urlContext, timeoutContext } from '../../App'
 //import { NavigationContainer } from '@react-navigation/native';
 //import { createStackNavigator } from '@react-navigation/stack';
 
@@ -23,6 +24,7 @@ const GetPendingPayments = ({ navigation }) => {
 
     const baseurl = useContext(urlContext)
     const data = useContext(dataContext)
+    const defaultTimeout = useContext(timeoutContext)
 
     const [isLoading, setisLoading] = useState(true)
     const [payments, setpayments] = useState()
@@ -31,21 +33,28 @@ const GetPendingPayments = ({ navigation }) => {
 
     useEffect(() => {
 
-        fetch(`${baseurl}/supplier/${data.id}/getpendingpayments`, {
+        axios({
+            url: `${baseurl}/supplier/${data.id}/getpendingpayments`,
             method: 'GET',
+            timeout: defaultTimeout,
             headers: {
                 'Content-Type': 'application/json',
             },
         })
-            .then((response) => response.json())
             .then((responsejson) => {
-                setpayments(responsejson)
-                setGotPendingAmount(1);
-                setisLoading(false);
+                if (responsejson.data) {
+                    setpayments(responsejson.data)
+                    setGotPendingAmount(1);
+                    setisLoading(false);
+                }
+                else {
+                    Alert.alert('Sorry', 'Unable to fetch payment data. Retry later', [{ text: 'OK' }]);
+                    setisLoading(false);
+                }
             })
             .catch(function (error) {
                 console.log('problem reading the payments ' + error.message);
-                throw error;
+                Alert.alert('Sorry', 'Unable to fetch payment data. Retry later', [{ text: 'OK' }]);
             });
 
     }, []);
@@ -77,22 +86,26 @@ const GetPendingPayments = ({ navigation }) => {
 
     updateFullPaymentData = (item) => {
 
-        fetch(`${baseurl}/supplier/${data.id}/updatemoneysettled`, {
+        axios({
+            url: `${baseurl}/supplier/${data.id}/updatemoneysettled`,
             method: 'PUT',
+            timeout: defaultTimeout,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(item),
+            data: JSON.stringify(item),
         })
-            .then((response) => response.json())
             .then((responsejson) => {
-                if (responsejson) {
+                if (responsejson.data) {
                     updatePendingPayments(item)
+                }
+                else {
+                    Alert.alert('failure', " Unable to update payment status", [{ text: 'OK' }]);
                 }
             })
             .catch(function (error) {
                 console.log('problem setting payment status ' + error.message);
-                throw error;
+                Alert.alert('failure', " Unable to update payment status", [{ text: 'OK' }]);
             });
     }
 

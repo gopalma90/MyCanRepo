@@ -28,17 +28,20 @@ import {
 import GlobalVars from './GlobalVars'
 
 export const urlContext = React.createContext();
-
+export const timeoutContext = React.createContext();
 //const App: () => React$Node = () => {
-console.disableYellowBox = true;  // TO Suppress warnings
+//console.disableYellowBox = true;  // TO Suppress warnings
 //LogBox.ignoreAllLogs()
 const App = () => {
   var baseurl = 'http://' + GlobalVars.BASE_URL + ':' + GlobalVars.PORT + GlobalVars.VERSION
-
+  var timeoutval = GlobalVars.DEFAULT_TIMEOUT
+  
   return (
     <>
       <urlContext.Provider value={baseurl} >
+        <timeoutContext.Provider value = {timeoutval}>
         <HomeScreen url={baseurl}/>
+        </timeoutContext.Provider>
       </urlContext.Provider>
     </>
   );

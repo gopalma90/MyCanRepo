@@ -9,14 +9,16 @@ import {
   Button,
   Alert,
 } from 'react-native';
+import axios from 'axios'
 
 import { dataContext } from '../HomeScreen'
-import { urlContext } from '../../App'
+import { urlContext, timeoutContext } from '../../App'
 
 const CustomerOrder = ({ route, navigation }) => {
 
 
   const baseurl = useContext(urlContext)
+  const defaultTimeout = useContext( timeoutContext )
   const data = useContext(dataContext)
   const items = route.params.data;
   const [pendingCans, setPendingCans] = useState()
@@ -47,58 +49,68 @@ const CustomerOrder = ({ route, navigation }) => {
 
 
   updateDeliveredStatus = () => {
-    fetch(`${baseurl}/supplier/${data.id}/candelivered`, {
+    axios({
+      url: `${baseurl}/supplier/${data.id}/candelivered`,
       method: 'POST',
+      timeout : defaultTimeout,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(items),
+      data: JSON.stringify(items),
     })
-      .then((response) => response.json())
       .then((responsejson) => {
         if (responsejson) {
           // updateparentorder(items)
-          Alert.alert('Success', "Order status updated successfully", [{ text: 'Ok' }])
+          if ( responsejson.data ) {
+            Alert.alert('Success', "Order status updated successfully", [{ text: 'Ok' }])
+          }
           navigation.navigate('GetOrders', { order: items });
         }
       })
-      .catch(function (error) {
+      .catch(error => {
         console.log('problem setting delivery status ' + error.message);
-        throw error;
+        Alert.alert('Failure', "Order status updated failed", [{ text: 'Ok' }])
       });
   }
 
   updateOrderDismissStatus = () => {
-    fetch(`${baseurl}/supplier/${data.id}/dismissorder`, {
+    axios( {
+      url: `${baseurl}/supplier/${data.id}/dismissorder`,
+      timeout : defaultTimeout,
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(items),
+      data: JSON.stringify(items),
     })
-      .then((response) => response.json())
       .then((responsejson) => {
         if (responsejson) {
           // updateparentorder(items)
+          console.log ( "updateOrderDismissStatus  " + responsejson.data)
+          if ( responsejson.data ) {
+
           Alert.alert('Success', "Order cancellation successful", [{ text: 'Ok' }])
+          }
           navigation.navigate('GetOrders', { order: items });
         }
       })
-      .catch(function (error) {
+      .catch(error => {
         console.log('problem setting delivery status ' + error.message);
-        throw error;
+        Alert.alert('Failure', "Unable to reject order", [{ text: 'Ok' }])
       });
   }
 
 
   updatePendingcans = (text) => {
 
-    fetch(`${baseurl}/supplier/${data.id}/updatecustomerpendingcans`, {
+    axios( {
+      url: `${baseurl}/supplier/${data.id}/updatecustomerpendingcans`,
       method: 'PUT',
+      timeout : defaultTimeout,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
+      data: JSON.stringify({
         "customer": {
           "id": items.customer.id,
         },
@@ -107,39 +119,47 @@ const CustomerOrder = ({ route, navigation }) => {
         },
       }),
     })
-      .then((response) => response.json())
       .then((responsejson) => {
-        if (responsejson) {
+        if (responsejson.data) {
           Alert.alert('Success', "Pending can status updated successfully", [{ text: 'Ok' }])
+        }
+        else {
+          Alert.alert('failure', "unable to update pending cans", [{ text: 'Ok' }])
+
         }
       })
       .catch(function (error) {
         console.log('problem setting delivery status ' + error.message);
-        throw error;
+        Alert.alert('Failure', "Pending can status not updated", [{ text: 'Ok' }])
       });
 
   }
 
   updatePaidStatus = () => {
 
-    fetch(`${baseurl}/supplier/${data.id}/paidforcan`, {
+    axios( {
+      url: `${baseurl}/supplier/${data.id}/paidforcan`,
       method: 'POST',
+      timeout : defaultTimeout,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(items),
+      data: JSON.stringify(items),
     })
-      .then((response) => response.json())
       .then((responsejson) => {
-        if (responsejson) {
+        if (responsejson.data) {
           //  updateparentorder(items)
           Alert.alert('Success', "Order status updated successfully", [{ text: 'Ok' }])
           navigation.navigate('GetOrders', { order: items });
         }
+        else {
+          Alert.alert('Failure', "Order status update failed", [{ text: 'Ok' }])
+
+        }
       })
       .catch(function (error) {
         console.log('problem setting delivery status ' + error.message);
-        throw error;
+        Alert.alert('Failure', "Order status update failed", [{ text: 'Ok' }])
       });
   }
 

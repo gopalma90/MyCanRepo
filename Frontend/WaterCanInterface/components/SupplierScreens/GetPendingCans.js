@@ -11,9 +11,10 @@ import {
     SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
+import axios from 'axios'
 
 import { dataContext } from '../HomeScreen'
-import { urlContext } from '../../App'
+import { urlContext , timeoutContext } from '../../App'
 
 
 const GetPendingPayments = ({ navigation }) => {
@@ -25,6 +26,7 @@ const GetPendingPayments = ({ navigation }) => {
 
     const baseurl = useContext(urlContext)
     const data = useContext(dataContext)
+    const defaultTimeout = useContext( timeoutContext )
 
     calculateTotalCanCount = ( response) => {        
         var count = 0;
@@ -56,22 +58,29 @@ const GetPendingPayments = ({ navigation }) => {
     }
 
     useEffect(() => {
-        fetch(`${baseurl}/supplier/${data.id}/getallpendingcans`, {
+        axios( {
+            url: `${baseurl}/supplier/${data.id}/getallpendingcans`,
             method: 'GET',
+            timeout : defaultTimeout,
             headers: {
                 'Content-Type': 'application/json',
             },
         })
-            .then((response) => response.json())
             .then((responsejson) => {
-                setPendingCans(responsejson)
-                calculateTotalCanCount (responsejson);
+                if ( responsejson.data ) {
+                setPendingCans(responsejson.data)
+                calculateTotalCanCount (responsejson.data);
                 setGotPendingCans(1);
                 setisLoading(false);
+            }
+            else {
+                Alert.alert('Sorry', 'Unable to fetch pending can details. Please retry later', [{ text: 'OK'}]  );
+
+            }
             })
-            .catch(function (error) {
+            .catch(error => {
                 console.log('problem reading the pendingcans ' + error.message);
-                throw error;
+                Alert.alert('Sorry', 'Unable to fetch data. Retry later', [{ text: 'OK'}]  );
             });
 
     }, []);

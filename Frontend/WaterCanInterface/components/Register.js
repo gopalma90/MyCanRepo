@@ -4,12 +4,13 @@ import {
     Alert,
 } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
-import {urlContext} from '../App'
-
+import {urlContext, timeoutContext} from '../App'
+import axios from 'axios'
 
 const Register = (props) => {
     const baseurl =    useContext(urlContext);
-    
+    const defaultTimeout = useContext(timeoutContext) ;
+
     const [contactno, setContactno] = useState()
     const [name, setName] = useState()
     const [doorno, setDoorno] = useState()
@@ -68,31 +69,49 @@ const Register = (props) => {
         }
     }
     registerData = () => {
-        if ( isNaN(doorno) ) {
-            Alert.alert('Invalid data', 'Doorno should be a number.', [{ text: 'OK' }]); 
-        }
-        if ( isNaN(floorno) ) {
-            Alert.alert('Invalid data', 'Floorno should be a number.', [{ text: 'OK' }]); 
-        }
+        
         if (shopname && supplierid) {
             Alert.alert('Invalid data', 'Please provide either Shop name  if you are supplier and SupplierId if you are consumer. Not both ', [{ text: 'OK' }]);
+            return;
         }
         if ( isNaN(contactno) ){
             Alert.alert('Invalid data', 'Contact number should not contain letters', [{ text: 'OK' }]); 
+            return;
+        }
+        if ( doorno === '') {
+            Alert.alert('Invalid data', 'Door number cannotbe empty', [{ text: 'OK' }]); 
+
+        }
+        if ( street === '') {
+            Alert.alert('Invalid data', 'Street name cannot be empty', [{ text: 'OK' }]); 
+        }
+
+        if ( area === '') {
+            Alert.alert('Invalid data', 'Area name cannot be empty', [{ text: 'OK' }]); 
+        }
+
+        if ( city === '') {
+            Alert.alert('Invalid data', 'City name cannot be empty', [{ text: 'OK' }]); 
+        }
+
+        if ( name === '') {
+            Alert.alert('Invalid data', 'Please provide your name', [{ text: 'OK' }]); 
         }
         if (shopname) {
-            fetch(`${baseurl}/supplier`, {
+            axios( { 
+                url: `${baseurl}/supplier`, 
                 method: 'POST',
+                timeout: defaultTimeout,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
+                data: JSON.stringify({
                     "name": name,
                     "contact": contactno,
                     "shopname": shopname,
                     "address": {
                         "doorno": doorno,
-                        "floor": floorno,
+                        "floor":  floorno ,
                         "street": street,
                         "apartmentname": apartmentname,
                         "area": area,
@@ -101,24 +120,24 @@ const Register = (props) => {
                     }
                 }),
             })
-                .then((response) => response.json())
                 .then((responsejson) => {
-                    _setData(JSON.stringify(responsejson));
-                    var iddata = " SupplierId " +  responsejson.id 
+                    _setData(JSON.stringify(responsejson.data));
+                    var iddata = " SupplierId " +  responsejson.data.id 
                     Alert.alert('Successfully registered', JSON.stringify(iddata) , [{ text: 'OK and Restart' }])
                 })
-                .catch(function (error) {
-                    console.log('There has been a problem in registering the supplier ' + error.message);
-                    Alert.alert('Sorry', 'Registration failed. Please restart the app and try again', [{ text: 'OK'}]  );
+                .catch( error=> {
+                    console.log('There has been a problem in registration. ' + error.message);
+                    Alert.alert('Sorry', 'Registration failed. Please check network or try again later', [{ text: 'OK'}]  );
                 });
         }
         else if (supplierid) {
-            fetch(`${baseurl}/customer`, {
+            axios({ 
+                url: `${baseurl}/customer`, 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
+                data: JSON.stringify({
                     "name": name,
                     "contact": contactno,
                     "supplierid": supplierid,
@@ -133,9 +152,8 @@ const Register = (props) => {
                     }
                 }),
             })
-                .then((response) => response.json())
                 .then((responsejson) => {
-                    _setData(JSON.stringify(responsejson));
+                    _setData(JSON.stringify(responsejson.data));
                     Alert.alert('Successfully registered', 'Press Ok and restart the app.', [{ text: 'OK' }])
 
                 })
@@ -146,7 +164,7 @@ const Register = (props) => {
         }
         else {
             Alert.alert('Invalid data', 'Please provide Shopname if you are supplier and SupplierId if you are consumer', [{ text: 'OK' }]);
-
+            return;
         }
     }
     return (
@@ -156,28 +174,28 @@ const Register = (props) => {
 
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
-                placeholder="Name"
+                placeholder="Name ( Mandatory field) "
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleName} />
 
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
-                placeholder="Contact no"
+                placeholder="Contact no  ( Mandatory field) "
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleContact} />
 
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
-                placeholder="Door No"
+                placeholder="Door No  ( Mandatory field) "
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleDoorNo} />
 
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
-                placeholder="Street"
+                placeholder="Street  ( Mandatory field) "
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleStreet} />
@@ -198,14 +216,14 @@ const Register = (props) => {
 
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
-                placeholder="Area"
+                placeholder="Area  ( Mandatory field) "
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleArea} />
 
             <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
-                placeholder="City"
+                placeholder="City  ( Mandatory field) "
                 placeholderTextColor="#a9a9a9"
                 autoCapitalize="none"
                 onChangeText={handleCity} />
