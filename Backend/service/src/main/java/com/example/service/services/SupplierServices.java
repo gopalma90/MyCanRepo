@@ -55,7 +55,7 @@ public class SupplierServices {
 			obj = (JSONObject) new JSONObject(request);
 			JSONObject addressobj = obj.getJSONObject("address");
 
-			String floor = addressobj.has("floorno") ? addressobj.getString("floorno") : " ";
+			String floor = addressobj.has("floor") ? addressobj.getString("floor") : " ";
 			String apartmentname = addressobj.has("apartmentname") ? addressobj.getString("apartmentname") : " ";
 			String state = addressobj.has("state") ? addressobj.getString("state") : " ";
 
