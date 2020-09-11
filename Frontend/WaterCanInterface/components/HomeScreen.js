@@ -13,6 +13,9 @@ import GetPendingCans from './SupplierScreens/GetPendingCans'
 import SupplierSettings from './SupplierScreens/SupplierSettings'
 import BusinessSettings from './SupplierScreens/BusinessSettings'
 
+import SupplierRegistration from './SupplierScreens/Register'
+import CustomerRegistration from './CustomerScreens/Register'
+import RegistrationScreen from './RegistrationScreen'
 import GetPendingOrders from './CustomerScreens/GetPendingOrders'
 
 
@@ -30,7 +33,7 @@ export const dataContext = React.createContext();
 
 const SupplierStack = createStackNavigator();
 const CustomerStack = createStackNavigator();
-
+const RegistrationStack = createStackNavigator();
 
 
 function HomeScreen(props) {
@@ -77,7 +80,20 @@ function HomeScreen(props) {
     console.log(" data = " + clientdata)
 
     if (isEmpty(clientdata)) {
-      return <Register url={props.url} />
+
+      return( 
+        <NavigationContainer>
+
+        <RegistrationStack.Navigator>
+
+            < RegistrationStack.Screen name="RegistrationScreen" component={RegistrationScreen}  options={{ title: "Hi, Welcome" }}/>
+            < RegistrationStack.Screen name="SupplierRegistration" component={SupplierRegistration}  options={{ title: "Welcome" }} />
+            < RegistrationStack.Screen name="CustomerRegistration" component={CustomerRegistration}  options={{ title: "Welcome" }} />
+
+         </RegistrationStack.Navigator>
+         </NavigationContainer>
+
+         );
     }
     else if (clientdata.hasOwnProperty('shopname')) {
       return (
